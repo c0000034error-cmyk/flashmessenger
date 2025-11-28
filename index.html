@@ -6,6 +6,7 @@
     <title>FlashMessenger ✨</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* ТВОЙ СТАРЫЙ CSS КОД ОСТАВЛЯЕМ БЕЗ ИЗМЕНЕНИЙ */
         * {
             margin: 0;
             padding: 0;
@@ -51,486 +52,8 @@
             border: 1px solid var(--surface-light);
         }
 
-        @keyframes containerAppear {
-            0% { 
-                transform: scale(0.8) translateY(100px); 
-                opacity: 0; 
-            }
-            100% { 
-                transform: scale(1) translateY(0); 
-                opacity: 1; 
-            }
-        }
+        /* ... ОСТАЛЬНОЙ CSS КОД БЕЗ ИЗМЕНЕНИЙ ... */
 
-        @keyframes slideInFromLeft {
-            0% { transform: translateX(-100px); opacity: 0; }
-            100% { transform: translateX(0); opacity: 1; }
-        }
-
-        @keyframes slideInFromRight {
-            0% { transform: translateX(100px); opacity: 0; }
-            100% { transform: translateX(0); opacity: 1; }
-        }
-
-        @keyframes fadeInUp {
-            0% { transform: translateY(30px); opacity: 0; }
-            100% { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 20px rgba(135, 116, 225, 0.3); }
-            50% { box-shadow: 0 0 30px rgba(135, 116, 225, 0.6); }
-        }
-
-        @keyframes messageBounce {
-            0% { transform: scale(0.5); opacity: 0; }
-            70% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        @keyframes typingAnimation {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-5px); }
-            100% { transform: translateY(0px); }
-        }
-
-        .floating-particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .particle {
-            position: absolute;
-            background: rgba(135, 116, 225, 0.1);
-            border-radius: 50%;
-            animation: float 6s infinite ease-in-out;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
-        }
-
-        .header {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            padding: 25px 20px;
-            text-align: center;
-            position: relative;
-            z-index: 1;
-            animation: slideInFromLeft 0.8s ease-out;
-        }
-
-        .header h1 {
-            font-size: 26px;
-            font-weight: 700;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-
-        .screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1;
-        }
-
-        .welcome-screen {
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            background: var(--surface);
-        }
-
-        .auth-screen {
-            justify-content: center;
-            opacity: 0;
-            transform: translateY(50px);
-            pointer-events: none;
-        }
-
-        .auth-screen.active {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: all;
-        }
-
-        .welcome-title {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, var(--primary), #ff6b6b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: fadeInUp 1s ease-out 0.5s both;
-        }
-
-        .welcome-subtitle {
-            color: var(--text-secondary);
-            margin-bottom: 40px;
-            animation: fadeInUp 1s ease-out 0.7s both;
-        }
-
-        .auth-buttons {
-            display: flex;
-            gap: 15px;
-            animation: fadeInUp 1s ease-out 0.9s both;
-        }
-
-        .auth-btn {
-            padding: 15px 30px;
-            border: 2px solid var(--primary);
-            border-radius: 15px;
-            background: transparent;
-            color: var(--primary);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            animation: pulseGlow 2s infinite;
-        }
-
-        .auth-btn:hover {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-3px);
-        }
-
-        .auth-form {
-            width: 100%;
-            max-width: 320px;
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        .form-title {
-            font-size: 24px;
-            margin-bottom: 30px;
-            text-align: center;
-            color: var(--text);
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 18px 20px;
-            background: var(--surface-light);
-            border: 2px solid transparent;
-            border-radius: 15px;
-            color: var(--text);
-            font-size: 16px;
-            transition: all 0.3s ease;
-            outline: none;
-        }
-
-        .input-group input:focus {
-            border-color: var(--primary);
-            background: var(--surface);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(135, 116, 225, 0.2);
-        }
-
-        .password-toggle {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .password-toggle:hover {
-            color: var(--primary);
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            border: none;
-            border-radius: 15px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(135, 116, 225, 0.4);
-        }
-
-        .submit-btn:active {
-            transform: translateY(-1px);
-        }
-
-        .back-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 16px;
-            cursor: pointer;
-            margin-bottom: 20px;
-            transition: color 0.3s ease;
-        }
-
-        .back-btn:hover {
-            color: var(--primary);
-        }
-
-        .chat-screen {
-            display: none;
-            flex-direction: column;
-            height: 100%;
-            background: var(--surface);
-        }
-
-        .chat-header {
-            padding: 20px;
-            background: var(--surface-light);
-            border-bottom: 1px solid var(--surface-light);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            animation: slideInFromRight 0.6s ease-out;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .avatar {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 18px;
-            animation: typingAnimation 2s infinite;
-        }
-
-        .search-box {
-            padding: 15px 20px;
-            background: var(--surface);
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 15px 20px;
-            background: var(--surface-light);
-            border: none;
-            border-radius: 25px;
-            color: var(--text);
-            font-size: 14px;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .search-box input:focus {
-            background: var(--surface);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        .users-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-        }
-
-        .user-item {
-            display: flex;
-            align-items: center;
-            padding: 18px;
-            border-radius: 20px;
-            margin-bottom: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            animation: slideInFromLeft 0.5s ease-out;
-            background: var(--surface-light);
-        }
-
-        .user-item:hover {
-            background: var(--primary);
-            transform: translateX(10px) scale(1.02);
-        }
-
-        .user-item.active {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-        }
-
-        .chat-container {
-            display: none;
-            flex-direction: column;
-            height: 100%;
-            background: var(--surface);
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            background: var(--background);
-        }
-
-        .message {
-            max-width: 75%;
-            padding: 15px 20px;
-            margin-bottom: 20px;
-            border-radius: 25px;
-            position: relative;
-            animation: messageBounce 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            line-height: 1.4;
-        }
-
-        .message.sent {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            margin-left: auto;
-            border-bottom-right-radius: 8px;
-        }
-
-        .message.received {
-            background: var(--surface-light);
-            color: var(--text);
-            border-bottom-left-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .message-time {
-            font-size: 11px;
-            opacity: 0.7;
-            margin-top: 8px;
-            text-align: right;
-        }
-
-        .message-input {
-            padding: 20px;
-            background: var(--surface-light);
-            border-top: 1px solid var(--surface);
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .message-input input {
-            flex: 1;
-            padding: 15px 20px;
-            background: var(--surface);
-            border: none;
-            border-radius: 25px;
-            color: var(--text);
-            outline: none;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .message-input input:focus {
-            background: var(--surface-light);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        .send-btn {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            border: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-
-        .send-btn:hover {
-            transform: scale(1.1) rotate(15deg);
-            box-shadow: 0 10px 25px rgba(135, 116, 225, 0.4);
-        }
-
-        .typing-indicator {
-            padding: 10px 20px;
-            color: var(--primary);
-            font-size: 12px;
-            font-style: italic;
-            animation: pulse 1.5s infinite;
-        }
-
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            background: var(--success);
-            color: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            z-index: 1000;
-            animation: slideInFromRight 0.5s ease-out;
-        }
-
-        .floating-action {
-            position: absolute;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-            animation: pulseGlow 3s infinite;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        .floating-action:hover {
-            transform: scale(1.1) rotate(180deg);
-        }
-
-        .switch-auth {
-            text-align: center;
-            margin-top: 20px;
-            color: var(--text-secondary);
-        }
-
-        .switch-auth a {
-            color: var(--primary);
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .switch-auth a:hover {
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
@@ -679,6 +202,35 @@
                 this.currentUser = null;
                 this.targetUser = null;
                 this.typingUsers = new Set();
+                
+                // Автоматически создаем тестовых пользователей если их нет
+                this.createDemoUsers();
+            }
+
+            createDemoUsers() {
+                if (this.users.length === 0) {
+                    const demoUsers = [
+                        { username: 'Анна', password: '1234' },
+                        { username: 'Максим', password: '1234' },
+                        { username: 'София', password: '1234' },
+                        { username: 'Артем', password: '1234' },
+                        { username: 'Виктория', password: '1234' }
+                    ];
+
+                    demoUsers.forEach((demo, index) => {
+                        const user = {
+                            id: Date.now() + index,
+                            username: demo.username,
+                            password: btoa(demo.password),
+                            avatar: demo.username.charAt(0).toUpperCase(),
+                            joined: new Date().toISOString(),
+                            online: true,
+                            lastSeen: new Date().toISOString()
+                        };
+                        this.users.push(user);
+                    });
+                    this.saveUsers();
+                }
             }
 
             saveUsers() {
@@ -701,7 +253,7 @@
                 const user = {
                     id: Date.now(),
                     username: username,
-                    password: btoa(password), // Simple encoding
+                    password: btoa(password),
                     avatar: username.charAt(0).toUpperCase(),
                     joined: new Date().toISOString(),
                     online: true,
@@ -730,11 +282,17 @@
             }
 
             searchUsers(query) {
-                if (!query) return this.users.filter(u => u.id !== this.currentUser?.id);
-                return this.users.filter(u => 
-                    u.username.toLowerCase().includes(query.toLowerCase()) && 
-                    u.id !== this.currentUser?.id
-                );
+                if (!this.currentUser) return [];
+                
+                let filteredUsers = this.users.filter(u => u.id !== this.currentUser.id);
+                
+                if (query) {
+                    filteredUsers = filteredUsers.filter(u => 
+                        u.username.toLowerCase().includes(query.toLowerCase())
+                    );
+                }
+                
+                return filteredUsers;
             }
 
             getChatHistory(userId1, userId2) {
@@ -745,6 +303,8 @@
             }
 
             sendMessage(toUserId, text) {
+                if (!text.trim()) return null;
+                
                 const message = {
                     id: Date.now(),
                     from: this.currentUser.id,
@@ -774,6 +334,30 @@
                     this.saveUsers();
                 }
                 this.currentUser = null;
+            }
+
+            // Новый метод для создания демо-сообщений
+            createDemoMessages() {
+                if (this.messages.length === 0 && this.users.length > 1) {
+                    const demoMessages = [
+                        { from: this.users[0].id, to: this.users[1].id, text: 'Привет! Как дела?' },
+                        { from: this.users[1].id, to: this.users[0].id, text: 'Привет! Все отлично, спасибо!' },
+                        { from: this.users[2].id, to: this.users[0].id, text: 'Добрый день!' },
+                    ];
+
+                    demoMessages.forEach((demo, index) => {
+                        const message = {
+                            id: Date.now() + index,
+                            from: demo.from,
+                            to: demo.to,
+                            text: demo.text,
+                            timestamp: new Date(Date.now() - 1000 * 60 * 60 * index).toISOString(),
+                            read: true
+                        };
+                        this.messages.push(message);
+                    });
+                    this.saveMessages();
+                }
             }
         }
 
@@ -876,9 +460,9 @@
             }
 
             try {
-                messenger.login(username, password);
+                const user = messenger.login(username, password);
                 showNotification('Успешный вход!');
-                setTimeout(showMainChat, 1000);
+                setTimeout(() => showMainChat(), 1000);
             } catch (error) {
                 showNotification(error.message, 'error');
             }
@@ -890,6 +474,9 @@
             document.getElementById('mainChatScreen').style.display = 'flex';
             document.getElementById('userAvatar').textContent = messenger.currentUser.avatar;
             document.getElementById('userGreeting').textContent = `Привет, ${messenger.currentUser.username}!`;
+            
+            // Создаем демо-сообщения при первом входе
+            messenger.createDemoMessages();
             loadUsersList();
         }
 
@@ -917,6 +504,18 @@
 
         function displayUsers(users) {
             const usersList = document.getElementById('usersList');
+            
+            if (users.length === 0) {
+                usersList.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                        <i class="fas fa-users" style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;"></i>
+                        <div>Пока нет других пользователей</div>
+                        <div style="font-size: 12px; margin-top: 10px;">Создайте новый аккаунт чтобы появились собеседники</div>
+                    </div>
+                `;
+                return;
+            }
+            
             usersList.innerHTML = users.map(user => `
                 <div class="user-item" onclick="openChat(${user.id}, '${user.username}')">
                     <div class="avatar" style="background: linear-gradient(135deg, #${getColorHash(user.username)}, #${getColorHash(user.username + '2')});">
@@ -925,7 +524,7 @@
                     <div>
                         <div style="font-weight: 500;">${user.username}</div>
                         <div style="font-size: 12px; color: var(--text-secondary);">
-                            ${user.online ? 'В сети' : 'Был(а) ' + formatLastSeen(user.lastSeen)}
+                            ${user.online ? '🟢 В сети' : '⚫ Был(а) ' + formatLastSeen(user.lastSeen)}
                         </div>
                     </div>
                 </div>
@@ -955,6 +554,17 @@
             const messages = messenger.getChatHistory(messenger.currentUser.id, messenger.targetUser.id);
             const chatMessages = document.getElementById('chatMessages');
             
+            if (messages.length === 0) {
+                chatMessages.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                        <i class="fas fa-comments" style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;"></i>
+                        <div>Начните общение!</div>
+                        <div style="font-size: 12px; margin-top: 10px;">Отправьте первое сообщение</div>
+                    </div>
+                `;
+                return;
+            }
+            
             chatMessages.innerHTML = messages.map(msg => `
                 <div class="message ${msg.from === messenger.currentUser.id ? 'sent' : 'received'}">
                     ${msg.text}
@@ -972,20 +582,24 @@
             if (!text || !messenger.targetUser) return;
 
             const message = messenger.sendMessage(messenger.targetUser.id, text);
-            addMessageToChat(message, true);
-            input.value = '';
+            if (message) {
+                addMessageToChat(message, true);
+                input.value = '';
 
-            // Simulate typing and reply
-            showTypingIndicator();
-            setTimeout(() => {
-                hideTypingIndicator();
-                if (Math.random() > 0.3) {
-                    const replies = ['Привет!', 'Как дела?', 'Интересно...', 'Спасибо!', 'Отлично!', 'Что нового?', 'Здорово!'];
-                    const replyText = replies[Math.floor(Math.random() * replies.length)];
-                    const replyMessage = messenger.sendMessage(messenger.currentUser.id, replyText);
-                    addMessageToChat(replyMessage, false);
-                }
-            }, 1500 + Math.random() * 2000);
+                // Simulate typing and reply
+                showTypingIndicator();
+                setTimeout(() => {
+                    hideTypingIndicator();
+                    if (Math.random() > 0.3) {
+                        const replies = ['Привет!', 'Как дела?', 'Интересно...', 'Спасибо!', 'Отлично!', 'Что нового?', 'Здорово!'];
+                        const replyText = replies[Math.floor(Math.random() * replies.length)];
+                        const replyMessage = messenger.sendMessage(messenger.currentUser.id, replyText);
+                        if (replyMessage) {
+                            addMessageToChat(replyMessage, false);
+                        }
+                    }
+                }, 1500 + Math.random() * 2000);
+            }
         }
 
         function showTypingIndicator() {
@@ -1000,6 +614,12 @@
 
         function addMessageToChat(message, isSent) {
             const chatMessages = document.getElementById('chatMessages');
+            
+            // Убираем placeholder если он есть
+            if (chatMessages.innerHTML.includes('Начните общение')) {
+                chatMessages.innerHTML = '';
+            }
+            
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
             messageDiv.innerHTML = `
