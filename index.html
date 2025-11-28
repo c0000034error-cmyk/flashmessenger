@@ -41,7 +41,6 @@
     </div>
 
     <script>
-        // Хранилище данных в LocalStorage
         let users = JSON.parse(localStorage.getItem('flashmessenger_users')) || [];
         let messages = JSON.parse(localStorage.getItem('flashmessenger_messages')) || [];
         let currentUser = null;
@@ -51,10 +50,9 @@
             const username = document.getElementById('username').value.trim();
             if (!username) return alert('Please enter username');
             
-            // Создаем или находим пользователя
             let user = users.find(u => u.username === username);
             if (!user) {
-                user = { id: Date.now(), username, online: true };
+                user = { id: Date.now(), username };
                 users.push(user);
                 localStorage.setItem('flashmessenger_users', JSON.stringify(users));
             }
@@ -63,29 +61,20 @@
             document.getElementById('currentUsername').textContent = user.username;
             document.getElementById('loginSection').style.display = 'none';
             document.getElementById('chatSection').style.display = 'block';
-            
             loadUserList();
         }
 
         function logout() {
             currentUser = null;
-            targetUser = null;
             document.getElementById('loginSection').style.display = 'block';
             document.getElementById('chatSection').style.display = 'none';
-            document.getElementById('username').value = '';
         }
 
         function searchUsers(searchTerm) {
-            if (!searchTerm) {
-                loadUserList();
-                return;
-            }
-            
             const filteredUsers = users.filter(user => 
                 user.username.toLowerCase().includes(searchTerm.toLowerCase()) &&
                 user.id !== currentUser.id
             );
-            
             displayUsers(filteredUsers);
         }
 
@@ -97,9 +86,7 @@
         function displayUsers(usersArray) {
             const userList = document.getElementById('userList');
             userList.innerHTML = usersArray.map(user => 
-                `<div class="user" onclick="startChat(${user.id}, '${user.username}')">
-                    👤 ${user.username}
-                </div>`
+                `<div class="user" onclick="startChat(${user.id}, '${user.username}')">👤 ${user.username}</div>`
             ).join('');
         }
 
@@ -110,8 +97,6 @@
         }
 
         function loadMessages() {
-            if (!targetUser) return;
-            
             const chatMessages = messages.filter(msg => 
                 (msg.from === currentUser.id && msg.to === targetUser.id) ||
                 (msg.from === targetUser.id && msg.to === currentUser.id)
@@ -139,7 +124,6 @@
 
             messages.push(message);
             localStorage.setItem('flashmessenger_messages', JSON.stringify(messages));
-            
             addMessageToChat(message, true);
             document.getElementById('messageInput').value = '';
         }
@@ -148,21 +132,150 @@
             const chatBox = document.getElementById('chatBox');
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${isMyMessage ? 'my-message' : ''}`;
-            messageDiv.innerHTML = `
-                <div><strong>${isMyMessage ? 'You' : targetUser.username}:</strong> ${message.text}</div>
-                <small>${message.timestamp}</small>
-            `;
+            messageDiv.innerHTML = `<div><strong>${isMyMessage ? 'You' : targetUser.username}:</strong> ${message.text}</div><small>${message.timestamp}</small>`;
             chatBox.appendChild(messageDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html>
+<head>
+    <title>FlashMessenger</title>
+    <style>
+        body { font-family: Arial; margin: 20px; background: #f0f0f0; }
+        .container { max-width: 400px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }
+        input, button { padding: 10px; margin: 5px; width: 100%; box-sizing: border-box; }
+        button { background: #0088cc; color: white; border: none; cursor: pointer; }
+        .chat { border: 1px solid #ccc; height: 300px; overflow-y: scroll; padding: 10px; margin: 10px 0; }
+        .user { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
+        .user:hover { background: #f5f5f5; }
+        .message { margin: 5px 0; padding: 5px; }
+        .my-message { background: #e3f2fd; text-align: right; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🚀 FlashMessenger</h2>
+        
+        <div id="loginSection">
+            <input type="text" id="username" placeholder="Enter your username">
+            <button onclick="login()">Start Chatting</button>
+        </div>
 
-        // Имитация получения сообщений (в реальном приложении было бы WebSocket)
-        setInterval(() => {
-            if (currentUser && targetUser) {
-                // Проверяем новые сообщения
-                loadMessages();
+        <div id="chatSection" style="display:none">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>Welcome, <span id="currentUsername"></span>!</h3>
+                <button onclick="logout()" style="width: auto;">Logout</button>
+            </div>
+            
+            <input type="text" id="searchUser" placeholder="Search users by username..." oninput="searchUsers(this.value)">
+            <div id="userList"></div>
+            
+            <div class="chat" id="chatBox"></div>
+            <div style="display: flex;">
+                <input type="text" id="messageInput" placeholder="Type your message..." style="flex: 1;">
+                <button onclick="sendMessage()" style="width: auto;">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let users = JSON.parse(localStorage.getItem('flashmessenger_users')) || [];
+        let messages = JSON.parse(localStorage.getItem('flashmessenger_messages')) || [];
+        let currentUser = null;
+        let targetUser = null;
+
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            if (!username) return alert('Please enter username');
+            
+            let user = users.find(u => u.username === username);
+            if (!user) {
+                user = { id: Date.now(), username };
+                users.push(user);
+                localStorage.setItem('flashmessenger_users', JSON.stringify(users));
             }
-        }, 2000);
+            
+            currentUser = user;
+            document.getElementById('currentUsername').textContent = user.username;
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('chatSection').style.display = 'block';
+            loadUserList();
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('chatSection').style.display = 'none';
+        }
+
+        function searchUsers(searchTerm) {
+            const filteredUsers = users.filter(user => 
+                user.username.toLowerCase().includes(searchTerm.toLowerCase()) &&
+                user.id !== currentUser.id
+            );
+            displayUsers(filteredUsers);
+        }
+
+        function loadUserList() {
+            const otherUsers = users.filter(user => user.id !== currentUser.id);
+            displayUsers(otherUsers);
+        }
+
+        function displayUsers(usersArray) {
+            const userList = document.getElementById('userList');
+            userList.innerHTML = usersArray.map(user => 
+                `<div class="user" onclick="startChat(${user.id}, '${user.username}')">👤 ${user.username}</div>`
+            ).join('');
+        }
+
+        function startChat(userId, username) {
+            targetUser = { id: userId, username };
+            document.getElementById('chatBox').innerHTML = `<div style="text-align: center; color: #666;">Chat with ${username}</div>`;
+            loadMessages();
+        }
+
+        function loadMessages() {
+            const chatMessages = messages.filter(msg => 
+                (msg.from === currentUser.id && msg.to === targetUser.id) ||
+                (msg.from === targetUser.id && msg.to === currentUser.id)
+            );
+            
+            const chatBox = document.getElementById('chatBox');
+            chatBox.innerHTML = `<div style="text-align: center; color: #666;">Chat with ${targetUser.username}</div>`;
+            
+            chatMessages.forEach(msg => {
+                addMessageToChat(msg, msg.from === currentUser.id);
+            });
+        }
+
+        function sendMessage() {
+            const messageText = document.getElementById('messageInput').value.trim();
+            if (!messageText || !targetUser) return;
+
+            const message = {
+                id: Date.now(),
+                from: currentUser.id,
+                to: targetUser.id,
+                text: messageText,
+                timestamp: new Date().toLocaleTimeString()
+            };
+
+            messages.push(message);
+            localStorage.setItem('flashmessenger_messages', JSON.stringify(messages));
+            addMessageToChat(message, true);
+            document.getElementById('messageInput').value = '';
+        }
+
+        function addMessageToChat(message, isMyMessage) {
+            const chatBox = document.getElementById('chatBox');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isMyMessage ? 'my-message' : ''}`;
+            messageDiv.innerHTML = `<div><strong>${isMyMessage ? 'You' : targetUser.username}:</strong> ${message.text}</div><small>${message.timestamp}</small>`;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
     </script>
 </body>
 </html>
