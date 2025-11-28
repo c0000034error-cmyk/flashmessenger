@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlashMessenger ✨</title>
+    <title>FlashMessenger - Межплатформенный мессенджер</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -25,7 +25,6 @@
             --warning: #ff9800;
             --online: #4caf50;
             --offline: #666;
-            --away: #ff9800;
         }
 
         body {
@@ -41,32 +40,25 @@
 
         .app-container {
             width: 100%;
-            max-width: 420px;
-            height: 95vh;
+            max-width: 400px;
+            height: 90vh;
             background: var(--surface);
-            border-radius: 25px;
+            border-radius: 20px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.5);
             overflow: hidden;
             display: flex;
             flex-direction: column;
             position: relative;
-            animation: containerAppear 1s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid var(--surface-light);
         }
 
-        @keyframes containerAppear {
-            0% { transform: scale(0.8) translateY(100px); opacity: 0; }
-            100% { transform: scale(1) translateY(0); opacity: 1; }
-        }
-
-        .floating-particles {
+        /* Частицы фона */
+        .particles {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 0;
         }
 
         .particle {
@@ -81,60 +73,13 @@
             50% { transform: translateY(-20px) rotate(180deg); }
         }
 
-        /* Навигация */
-        .nav-tabs {
-            display: flex;
-            background: var(--surface-light);
-            border-bottom: 1px solid var(--surface);
-            padding: 0 10px;
-        }
-
-        .nav-tab {
-            flex: 1;
-            padding: 15px 10px;
-            text-align: center;
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            font-size: 12px;
-            border-radius: 10px 10px 0 0;
-            margin: 0 5px;
-        }
-
-        .nav-tab.active {
-            color: var(--primary);
-            background: var(--surface);
-        }
-
-        .nav-tab .badge {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: var(--error);
-            color: white;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .nav-tab i {
-            display: block;
-            font-size: 20px;
-            margin-bottom: 5px;
-        }
-
         /* Экраны */
         .screen {
             display: none;
             flex-direction: column;
             height: 100%;
+            position: relative;
+            z-index: 1;
         }
 
         .screen.active {
@@ -146,30 +91,64 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 20px;
+            padding: 30px;
         }
 
-        .welcome-title {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 10px;
+        .app-logo {
+            font-size: 48px;
+            margin-bottom: 20px;
             background: linear-gradient(135deg, var(--primary), #ff6b6b);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .welcome-subtitle {
+        .app-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .app-subtitle {
             color: var(--text-secondary);
-            margin-bottom: 40px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .feature {
+            background: var(--surface-light);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .feature i {
+            font-size: 20px;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .feature-text {
+            font-size: 12px;
+            color: var(--text-secondary);
         }
 
         .auth-buttons {
             display: flex;
             gap: 15px;
+            width: 100%;
         }
 
         .auth-btn {
-            padding: 15px 30px;
+            flex: 1;
+            padding: 15px;
             border: 2px solid var(--primary);
             border-radius: 15px;
             background: transparent;
@@ -182,12 +161,12 @@
         .auth-btn:hover {
             background: var(--primary);
             color: white;
-            transform: translateY(-3px);
+            transform: translateY(-2px);
         }
 
         /* Auth Screens */
         .auth-screen {
-            padding: 20px;
+            padding: 30px;
             justify-content: center;
         }
 
@@ -271,6 +250,7 @@
         .switch-auth a {
             color: var(--primary);
             cursor: pointer;
+            text-decoration: none;
         }
 
         /* Main App */
@@ -287,8 +267,8 @@
         }
 
         .avatar {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             border-radius: 50%;
             display: flex;
@@ -296,7 +276,7 @@
             justify-content: center;
             color: white;
             font-weight: bold;
-            font-size: 20px;
+            font-size: 18px;
             position: relative;
         }
 
@@ -318,33 +298,70 @@
             background: var(--offline);
         }
 
-        .status-away {
-            background: var(--away);
+        .user-details {
+            flex: 1;
         }
 
-        .search-box {
-            padding: 15px 20px;
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .user-status {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .action-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            background: var(--surface-light);
+            border-bottom: 1px solid var(--surface);
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 15px 10px;
+            text-align: center;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+
+        .nav-tab.active {
+            color: var(--primary);
             background: var(--surface);
         }
 
-        .search-box input {
-            width: 100%;
-            padding: 12px 20px;
-            background: var(--surface-light);
-            border: none;
-            border-radius: 25px;
-            color: var(--text);
-            font-size: 14px;
-            outline: none;
+        .nav-tab i {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 5px;
         }
 
+        /* Content */
         .content-area {
             flex: 1;
             overflow-y: auto;
-            padding: 10px;
+            background: var(--background);
         }
 
-        /* Tab Content */
         .tab-content {
             display: none;
             flex-direction: column;
@@ -355,37 +372,27 @@
             display: flex;
         }
 
-        /* Friends List */
-        .friends-section {
-            margin-bottom: 20px;
+        /* Chat List */
+        .chat-list {
+            flex: 1;
         }
 
-        .section-title {
-            font-size: 16px;
-            color: var(--text-secondary);
-            margin-bottom: 15px;
-            padding: 0 10px;
-        }
-
-        .friend-item {
+        .chat-item {
             display: flex;
             align-items: center;
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 10px;
-            background: var(--surface-light);
-            transition: all 0.3s ease;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--surface-light);
             cursor: pointer;
+            transition: background 0.3s ease;
         }
 
-        .friend-item:hover {
-            background: var(--primary);
-            transform: translateX(5px);
+        .chat-item:hover {
+            background: var(--surface-light);
         }
 
-        .friend-avatar {
-            width: 45px;
-            height: 45px;
+        .chat-avatar {
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             display: flex;
@@ -393,106 +400,46 @@
             justify-content: center;
             color: white;
             font-weight: bold;
-            margin-right: 12px;
+            margin-right: 15px;
             position: relative;
         }
 
-        .friend-info {
+        .chat-info {
             flex: 1;
         }
 
-        .friend-name {
-            font-weight: 500;
+        .chat-name {
+            font-weight: 600;
             margin-bottom: 4px;
         }
 
-        .friend-status {
-            font-size: 12px;
+        .chat-last-message {
+            font-size: 13px;
             color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .friend-actions {
-            display: flex;
-            gap: 8px;
+        .chat-meta {
+            text-align: right;
         }
 
-        .action-btn {
-            width: 35px;
-            height: 35px;
-            border: none;
-            border-radius: 50%;
-            background: var(--surface);
-            color: var(--text);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .chat-time {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
         }
 
-        .action-btn:hover {
-            background: var(--primary);
-            transform: scale(1.1);
-        }
-
-        /* Friend Requests */
-        .request-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 10px;
-            background: var(--surface-light);
-        }
-
-        .request-actions {
-            display: flex;
-            gap: 8px;
-            margin-left: auto;
-        }
-
-        .accept-btn {
-            background: var(--success);
-            color: white;
-        }
-
-        .decline-btn {
-            background: var(--error);
-            color: white;
-        }
-
-        /* Users List */
-        .user-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 10px;
-            background: var(--surface-light);
-        }
-
-        .add-friend-btn {
+        .unread-badge {
             background: var(--primary);
             color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s ease;
+            border-radius: 10px;
+            padding: 2px 8px;
+            font-size: 10px;
         }
 
-        .add-friend-btn:hover {
-            background: var(--primary-dark);
-            transform: scale(1.05);
-        }
-
-        .add-friend-btn.added {
-            background: var(--text-secondary);
-            cursor: default;
-        }
-
-        /* Chat */
+        /* Chat Screen */
         .chat-header {
             padding: 15px 20px;
             background: var(--surface-light);
@@ -502,15 +449,24 @@
             gap: 12px;
         }
 
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 18px;
+            cursor: pointer;
+        }
+
         .chat-messages {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
-            background: var(--background);
+            display: flex;
+            flex-direction: column;
         }
 
         .message {
-            max-width: 75%;
+            max-width: 70%;
             padding: 12px 16px;
             margin-bottom: 15px;
             border-radius: 18px;
@@ -526,13 +482,14 @@
         .message.sent {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
-            margin-left: auto;
+            align-self: flex-end;
             border-bottom-right-radius: 5px;
         }
 
         .message.received {
             background: var(--surface-light);
             color: var(--text);
+            align-self: flex-start;
             border-bottom-left-radius: 5px;
         }
 
@@ -543,7 +500,7 @@
             text-align: right;
         }
 
-        .message-input {
+        .message-input-container {
             padding: 15px 20px;
             background: var(--surface-light);
             border-top: 1px solid var(--surface);
@@ -552,7 +509,7 @@
             align-items: center;
         }
 
-        .message-input input {
+        .message-input {
             flex: 1;
             padding: 12px 20px;
             background: var(--surface);
@@ -563,7 +520,7 @@
             font-size: 14px;
         }
 
-        .send-btn {
+        .send-button {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
@@ -571,16 +528,86 @@
             height: 45px;
             border-radius: 50%;
             cursor: pointer;
-            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
         }
 
-        .send-btn:hover {
+        .send-button:hover {
             transform: scale(1.1);
         }
 
+        /* Settings */
+        .settings-list {
+            padding: 20px;
+        }
+
+        .settings-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: var(--surface-light);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .settings-item:hover {
+            background: var(--primary);
+        }
+
+        .settings-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--surface);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary);
+        }
+
+        .settings-info {
+            flex: 1;
+        }
+
+        .settings-title {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .settings-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Notifications */
         .notification {
             position: fixed;
             top: 20px;
@@ -598,50 +625,54 @@
             from { transform: translateX(100px); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-secondary);
-        }
-
-        .empty-state i {
-            font-size: 48px;
-            margin-bottom: 15px;
-            opacity: 0.5;
-        }
-
-        .back-to-friends {
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 18px;
-            cursor: pointer;
-            padding: 5px;
-        }
     </style>
 </head>
 <body>
-    <div class="floating-particles" id="particles"></div>
+    <div class="particles" id="particles"></div>
     
     <div class="app-container">
         <!-- Welcome Screen -->
         <div class="screen welcome-screen active" id="welcomeScreen">
-            <div class="welcome-content">
-                <div class="welcome-title">
-                    <i class="fas fa-comments"></i> FlashMessenger
+            <div class="app-logo">
+                <i class="fas fa-comments"></i>
+            </div>
+            <div class="app-title">FlashMessenger</div>
+            <div class="app-subtitle">
+                Межплатформенный мессенджер<br>
+                Общайтесь на любых устройствах
+            </div>
+            
+            <div class="features">
+                <div class="feature">
+                    <i class="fas fa-mobile-alt"></i>
+                    <div class="feature-text">Любые устройства</div>
                 </div>
-                <div class="welcome-subtitle">
-                    Общайтесь с друзьями мгновенно
+                <div class="feature">
+                    <i class="fas fa-globe"></i>
+                    <div class="feature-text">Везде в мире</div>
                 </div>
-                <div class="auth-buttons">
-                    <button class="auth-btn" onclick="showScreen('registerScreen')">
-                        <i class="fas fa-user-plus"></i> Регистрация
-                    </button>
-                    <button class="auth-btn" onclick="showScreen('loginScreen')">
-                        <i class="fas fa-sign-in-alt"></i> Войти
-                    </button>
+                <div class="feature">
+                    <i class="fas fa-bolt"></i>
+                    <div class="feature-text">Мгновенно</div>
                 </div>
+                <div class="feature">
+                    <i class="fas fa-shield-alt"></i>
+                    <div class="feature-text">Безопасно</div>
+                </div>
+            </div>
+
+            <div class="auth-buttons">
+                <button class="auth-btn" onclick="showScreen('registerScreen')">
+                    <i class="fas fa-user-plus"></i> Регистрация
+                </button>
+                <button class="auth-btn" onclick="showScreen('loginScreen')">
+                    <i class="fas fa-sign-in-alt"></i> Войти
+                </button>
+            </div>
+
+            <div style="margin-top: 20px; color: var(--text-secondary); font-size: 12px; text-align: center;">
+                🔒 Ваши данные защищены<br>
+                📱 Работает на всех устройствах
             </div>
         </div>
 
@@ -703,102 +734,124 @@
 
         <!-- Main App -->
         <div class="screen" id="mainApp">
-            <!-- Навигация -->
-            <div class="nav-tabs">
-                <button class="nav-tab active" onclick="showAppTab('friends')">
-                    <i class="fas fa-user-friends"></i>
-                    <div>Друзья</div>
-                    <span class="badge" id="requestsBadge" style="display: none;">0</span>
-                </button>
-                <button class="nav-tab" onclick="showAppTab('discover')">
-                    <i class="fas fa-search"></i>
-                    <div>Поиск</div>
-                </button>
-                <button class="nav-tab" onclick="showAppTab('chat')">
-                    <i class="fas fa-comment"></i>
-                    <div>Чат</div>
-                </button>
-            </div>
-
-            <!-- Заголовок -->
+            <!-- Header -->
             <div class="app-header">
                 <div class="user-info">
                     <div class="avatar" id="userAvatar">
                         U
                         <div class="status-indicator status-online"></div>
                     </div>
-                    <div>
-                        <div id="userGreeting">Добро пожаловать!</div>
-                        <div style="font-size: 12px; opacity: 0.7;">В сети</div>
+                    <div class="user-details">
+                        <div class="user-name" id="userName">Пользователь</div>
+                        <div class="user-status" id="userStatus">В сети</div>
                     </div>
-                    <button class="action-btn" onclick="logout()" style="margin-left: auto;">
-                        <i class="fas fa-sign-out-alt"></i>
+                    <button class="action-btn" onclick="showAppTab('settings')">
+                        <i class="fas fa-cog"></i>
                     </button>
                 </div>
             </div>
 
-            <!-- Контент -->
+            <!-- Navigation -->
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showAppTab('chats')">
+                    <i class="fas fa-comments"></i>
+                    <div>Чаты</div>
+                </button>
+                <button class="nav-tab" onclick="showAppTab('contacts')">
+                    <i class="fas fa-users"></i>
+                    <div>Контакты</div>
+                </button>
+                <button class="nav-tab" onclick="showAppTab('settings')">
+                    <i class="fas fa-cog"></i>
+                    <div>Настройки</div>
+                </button>
+            </div>
+
+            <!-- Content Area -->
             <div class="content-area">
-                <!-- Друзья -->
-                <div class="tab-content active" id="friendsTab">
-                    <div class="search-box">
-                        <input type="text" id="friendsSearch" placeholder="Поиск друзей..." oninput="searchFriends(this.value)">
+                <!-- Chats Tab -->
+                <div class="tab-content active" id="chatsTab">
+                    <div class="chat-list" id="chatList">
+                        <!-- Chats will be loaded here -->
                     </div>
-                    <div class="friends-section">
-                        <div class="section-title">Заявки в друзья <span id="requestsCount">(0)</span></div>
-                        <div id="friendRequestsList">
-                            <!-- Заявки будут здесь -->
+                </div>
+
+                <!-- Contacts Tab -->
+                <div class="tab-content" id="contactsTab">
+                    <div class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <h3>Контакты</h3>
+                        <p>Список ваших контактов появится здесь</p>
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div class="tab-content" id="settingsTab">
+                    <div class="settings-list">
+                        <div class="settings-item" onclick="showNotification('Функция в разработке')">
+                            <div class="settings-icon">
+                                <i class="fas fa-user-edit"></i>
+                            </div>
+                            <div class="settings-info">
+                                <div class="settings-title">Редактировать профиль</div>
+                                <div class="settings-desc">Изменить имя, аватар, статус</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="friends-section">
-                        <div class="section-title">Друзья онлайн <span id="onlineCount">(0)</span></div>
-                        <div id="onlineFriendsList">
-                            <!-- Друзья онлайн -->
+                        <div class="settings-item" onclick="showNotification('Функция в разработке')">
+                            <div class="settings-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div class="settings-info">
+                                <div class="settings-title">Уведомления</div>
+                                <div class="settings-desc">Настройка оповещений</div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="friends-section">
-                        <div class="section-title">Все друзья <span id="allFriendsCount">(0)</span></div>
-                        <div id="allFriendsList">
-                            <!-- Все друзья -->
+                        <div class="settings-item" onclick="showNotification('Функция в разработке')">
+                            <div class="settings-icon">
+                                <i class="fas fa-moon"></i>
+                            </div>
+                            <div class="settings-info">
+                                <div class="settings-title">Темная тема</div>
+                                <div class="settings-desc">Используется темная тема</div>
+                            </div>
+                        </div>
+                        <div class="settings-item" onclick="logout()">
+                            <div class="settings-icon">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </div>
+                            <div class="settings-info">
+                                <div class="settings-title">Выйти</div>
+                                <div class="settings-desc">Завершить текущую сессию</div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Поиск людей -->
-                <div class="tab-content" id="discoverTab">
-                    <div class="search-box">
-                        <input type="text" id="discoverSearch" placeholder="Поиск пользователей..." oninput="searchDiscover(this.value)">
-                    </div>
-                    <div id="discoverUsersList">
-                        <!-- Пользователи для добавления -->
-                    </div>
-                </div>
-
-                <!-- Чат -->
-                <div class="tab-content" id="chatTab">
-                    <div class="chat-header" id="chatHeader" style="display: none;">
-                        <button class="back-to-friends" onclick="showAppTab('friends')">
+                <!-- Chat Screen -->
+                <div class="tab-content" id="chatScreen">
+                    <div class="chat-header">
+                        <button class="back-button" onclick="showAppTab('chats')">
                             <i class="fas fa-arrow-left"></i>
                         </button>
-                        <div class="avatar" id="chatTargetAvatar">
+                        <div class="avatar" id="currentChatAvatar">
                             U
-                            <div class="status-indicator status-offline"></div>
+                            <div class="status-indicator status-online"></div>
                         </div>
-                        <div>
-                            <div id="chatTargetName">Пользователь</div>
-                            <div id="chatTargetStatus" style="font-size: 12px; opacity: 0.7;">Не в сети</div>
+                        <div class="user-details">
+                            <div class="user-name" id="currentChatName">Чат</div>
+                            <div class="user-status" id="currentChatStatus">В сети</div>
                         </div>
                     </div>
                     <div class="chat-messages" id="chatMessages">
                         <div class="empty-state">
                             <i class="fas fa-comments"></i>
-                            <div>Выберите друга для общения</div>
-                            <div style="font-size: 12px; margin-top: 10px;">Перейдите в раздел "Друзья"</div>
+                            <h3>Начните общение</h3>
+                            <p>Отправьте первое сообщение в этом чате</p>
                         </div>
                     </div>
-                    <div class="message-input">
-                        <input type="text" id="messageInput" placeholder="Выберите друга для общения..." disabled>
-                        <button class="send-btn" onclick="sendMessage()" disabled>
+                    <div class="message-input-container">
+                        <input type="text" class="message-input" id="messageInput" placeholder="Введите сообщение..." disabled>
+                        <button class="send-button" id="sendButton" onclick="sendMessage()" disabled>
                             <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
@@ -808,173 +861,138 @@
     </div>
 
     <script>
-        class FlashMessenger {
+        // ==================== CLOUD DATABASE SIMULATION ====================
+        class CloudDatabase {
             constructor() {
-                this.users = JSON.parse(localStorage.getItem('flash_users')) || [];
-                this.messages = JSON.parse(localStorage.getItem('flash_messages')) || [];
-                this.friendships = JSON.parse(localStorage.getItem('flash_friends')) || [];
+                this.users = JSON.parse(localStorage.getItem('cloud_users')) || this.createDefaultUsers();
+                this.messages = JSON.parse(localStorage.getItem('cloud_messages')) || [];
+                this.sessions = JSON.parse(localStorage.getItem('cloud_sessions')) || [];
                 this.currentUser = null;
                 this.currentChat = null;
-                
-                this.createDemoData();
             }
 
-            createDemoData() {
-                if (this.users.length === 0) {
-                    const demoUsers = [
-                        { username: 'Анна', password: '1234', online: true },
-                        { username: 'Максим', password: '1234', online: false },
-                        { username: 'София', password: '1234', online: true },
-                        { username: 'Артем', password: '1234', online: false },
-                        { username: 'Виктория', password: '1234', online: true }
-                    ];
-
-                    demoUsers.forEach((demo, index) => {
-                        const user = {
-                            id: Date.now() + index,
-                            username: demo.username,
-                            password: btoa(demo.password),
-                            avatar: demo.username.charAt(0),
-                            online: demo.online,
-                            lastSeen: new Date().toISOString()
-                        };
-                        this.users.push(user);
-                    });
-
-                    // Создаем демо-дружбы
-                    this.friendships.push(
-                        { userId: this.users[0].id, friendId: this.users[1].id, status: 'accepted' },
-                        { userId: this.users[0].id, friendId: this.users[2].id, status: 'accepted' },
-                        { userId: this.users[1].id, friendId: this.users[0].id, status: 'pending' }
-                    );
-
-                    this.saveAll();
-                }
+            createDefaultUsers() {
+                const defaultUsers = [
+                    { id: 1, username: 'Анна', password: btoa('1234'), avatar: 'А', online: true, lastSeen: new Date().toISOString() },
+                    { id: 2, username: 'Максим', password: btoa('1234'), avatar: 'М', online: false, lastSeen: new Date().toISOString() },
+                    { id: 3, username: 'София', password: btoa('1234'), avatar: 'С', online: true, lastSeen: new Date().toISOString() },
+                    { id: 4, username: 'Артем', password: btoa('1234'), avatar: 'А', online: false, lastSeen: new Date().toISOString() },
+                    { id: 5, username: 'Виктория', password: btoa('1234'), avatar: 'В', online: true, lastSeen: new Date().toISOString() }
+                ];
+                localStorage.setItem('cloud_users', JSON.stringify(defaultUsers));
+                return defaultUsers;
             }
 
-            saveAll() {
-                localStorage.setItem('flash_users', JSON.stringify(this.users));
-                localStorage.setItem('flash_messages', JSON.stringify(this.messages));
-                localStorage.setItem('flash_friends', JSON.stringify(this.friendships));
-            }
-
+            // Регистрация нового пользователя
             register(username, password) {
                 if (this.users.find(u => u.username === username)) {
                     throw new Error('Пользователь с таким логином уже существует');
                 }
 
-                const user = {
+                const newUser = {
                     id: Date.now(),
                     username: username,
                     password: btoa(password),
                     avatar: username.charAt(0).toUpperCase(),
                     online: true,
-                    lastSeen: new Date().toISOString()
+                    lastSeen: new Date().toISOString(),
+                    device: this.getDeviceInfo()
                 };
-                
-                this.users.push(user);
-                this.saveAll();
-                return user;
+
+                this.users.push(newUser);
+                this.saveToCloud();
+                return newUser;
             }
 
+            // Авторизация
             login(username, password) {
                 const user = this.users.find(u => u.username === username);
                 if (!user) throw new Error('Пользователь не найден');
                 if (user.password !== btoa(password)) throw new Error('Неверный пароль');
-                
+
                 user.online = true;
                 user.lastSeen = new Date().toISOString();
+                user.device = this.getDeviceInfo();
+                
                 this.currentUser = user;
-                this.saveAll();
+                this.saveToCloud();
                 return user;
             }
 
-            logout() {
-                if (this.currentUser) {
-                    this.currentUser.online = false;
-                    this.currentUser.lastSeen = new Date().toISOString();
-                }
-                this.currentUser = null;
-                this.currentChat = null;
-                this.saveAll();
-            }
-
-            // Система друзей
-            sendFriendRequest(toUserId) {
-                const existing = this.friendships.find(f => 
-                    (f.userId === this.currentUser.id && f.friendId === toUserId) ||
-                    (f.userId === toUserId && f.friendId === this.currentUser.id)
-                );
-
-                if (existing) return existing;
-
-                const friendship = {
-                    userId: this.currentUser.id,
-                    friendId: toUserId,
-                    status: 'pending',
-                    timestamp: new Date().toISOString()
+            // Получение информации об устройстве
+            getDeviceInfo() {
+                return {
+                    platform: navigator.platform,
+                    userAgent: navigator.userAgent,
+                    language: navigator.language,
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                    lastLogin: new Date().toISOString()
                 };
-
-                this.friendships.push(friendship);
-                this.saveAll();
-                return friendship;
             }
 
-            acceptFriendRequest(fromUserId) {
-                const request = this.friendships.find(f => 
-                    f.userId === fromUserId && f.friendId === this.currentUser.id && f.status === 'pending'
+            // Сохранение в "облако" (localStorage)
+            saveToCloud() {
+                localStorage.setItem('cloud_users', JSON.stringify(this.users));
+                localStorage.setItem('cloud_messages', JSON.stringify(this.messages));
+                localStorage.setItem('cloud_sessions', JSON.stringify(this.sessions));
+            }
+
+            // Получение списка чатов
+            getChats() {
+                const userMessages = this.messages.filter(msg => 
+                    msg.from === this.currentUser.id || msg.to === this.currentUser.id
                 );
 
-                if (request) {
-                    request.status = 'accepted';
-                    this.saveAll();
-                }
-                return request;
+                const chatPartners = new Set();
+                userMessages.forEach(msg => {
+                    if (msg.from === this.currentUser.id) {
+                        chatPartners.add(msg.to);
+                    } else {
+                        chatPartners.add(msg.from);
+                    }
+                });
+
+                return Array.from(chatPartners).map(partnerId => {
+                    const partner = this.users.find(u => u.id === partnerId);
+                    const lastMessage = this.getLastMessage(partnerId);
+                    return {
+                        partner: partner,
+                        lastMessage: lastMessage,
+                        unread: this.getUnreadCount(partnerId)
+                    };
+                }).filter(chat => chat.partner).sort((a, b) => {
+                    return new Date(b.lastMessage?.timestamp || 0) - new Date(a.lastMessage?.timestamp || 0);
+                });
             }
 
-            declineFriendRequest(fromUserId) {
-                this.friendships = this.friendships.filter(f => 
-                    !(f.userId === fromUserId && f.friendId === this.currentUser.id && f.status === 'pending')
-                );
-                this.saveAll();
+            // Получение последнего сообщения в чате
+            getLastMessage(partnerId) {
+                const messages = this.messages.filter(msg => 
+                    (msg.from === this.currentUser.id && msg.to === partnerId) ||
+                    (msg.from === partnerId && msg.to === this.currentUser.id)
+                ).sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                return messages[0];
             }
 
-            getFriendRequests() {
-                return this.friendships.filter(f => 
-                    f.friendId === this.currentUser.id && f.status === 'pending'
-                ).map(f => this.users.find(u => u.id === f.userId)).filter(Boolean);
+            // Получение количества непрочитанных сообщений
+            getUnreadCount(partnerId) {
+                return this.messages.filter(msg => 
+                    msg.from === partnerId && 
+                    msg.to === this.currentUser.id && 
+                    !msg.read
+                ).length;
             }
 
-            getFriends() {
-                const friendships = this.friendships.filter(f => 
-                    (f.userId === this.currentUser.id || f.friendId === this.currentUser.id) && 
-                    f.status === 'accepted'
-                );
-
-                return friendships.map(f => {
-                    const friendId = f.userId === this.currentUser.id ? f.friendId : f.userId;
-                    return this.users.find(u => u.id === friendId);
-                }).filter(Boolean);
+            // Получение истории сообщений
+            getMessageHistory(partnerId) {
+                return this.messages.filter(msg => 
+                    (msg.from === this.currentUser.id && msg.to === partnerId) ||
+                    (msg.from === partnerId && msg.to === this.currentUser.id)
+                ).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
             }
 
-            getOnlineFriends() {
-                return this.getFriends().filter(f => f.online);
-            }
-
-            getDiscoverUsers() {
-                const friends = this.getFriends();
-                const pending = this.friendships.filter(f => 
-                    f.userId === this.currentUser.id && f.status === 'pending'
-                ).map(f => f.friendId);
-
-                return this.users.filter(u => 
-                    u.id !== this.currentUser.id &&
-                    !friends.find(f => f.id === u.id) &&
-                    !pending.includes(u.id)
-                );
-            }
-
-            // Сообщения
+            // Отправка сообщения
             sendMessage(toUserId, text) {
                 const message = {
                     id: Date.now(),
@@ -982,34 +1000,90 @@
                     to: toUserId,
                     text: text.trim(),
                     timestamp: new Date().toISOString(),
-                    read: false
+                    read: false,
+                    device: this.getDeviceInfo()
                 };
+
                 this.messages.push(message);
-                this.saveAll();
+                this.saveToCloud();
+
+                // Симуляция получения сообщения на другом устройстве
+                this.simulateCrossDeviceMessage(message);
+                
                 return message;
             }
 
-            getChatHistory(userId) {
-                return this.messages.filter(msg => 
-                    (msg.from === this.currentUser.id && msg.to === userId) ||
-                    (msg.from === userId && msg.to === this.currentUser.id)
-                ).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+            // Симуляция межплатформенного общения
+            simulateCrossDeviceMessage(message) {
+                setTimeout(() => {
+                    const partner = this.users.find(u => u.id === message.to);
+                    if (partner && Math.random() > 0.3) { // 70% chance of reply
+                        const replies = [
+                            "Привет! Как дела?",
+                            "Получил твое сообщение!",
+                            "Интересно, расскажи подробнее",
+                            "Спасибо за сообщение!",
+                            "Отлично! А у тебя как?",
+                            "Я на другом устройстве, но вижу твои сообщения!",
+                            "Рад общению с тобой!",
+                            "Как твой день проходит?"
+                        ];
+                        
+                        const replyMessage = {
+                            id: Date.now(),
+                            from: message.to,
+                            to: this.currentUser.id,
+                            text: replies[Math.floor(Math.random() * replies.length)],
+                            timestamp: new Date().toISOString(),
+                            read: false,
+                            device: { platform: "Cross-Device", userAgent: "FlashMessenger Cloud" }
+                        };
+
+                        this.messages.push(replyMessage);
+                        this.saveToCloud();
+
+                        // Обновляем UI если открыт этот чат
+                        if (this.currentChat && this.currentChat.id === message.to) {
+                            addMessageToChat(replyMessage, false);
+                        }
+                        
+                        showNotification(`Новое сообщение от ${partner.username}`);
+                    }
+                }, 2000 + Math.random() * 3000);
             }
 
-            // Обновление статусов
-            updateUserStatus(userId, online) {
-                const user = this.users.find(u => u.id === userId);
-                if (user) {
-                    user.online = online;
-                    user.lastSeen = new Date().toISOString();
-                    this.saveAll();
+            // Создание демо-чатов
+            createDemoChats() {
+                if (this.messages.length === 0) {
+                    const demoMessages = [
+                        { from: 1, to: this.currentUser.id, text: "Привет! Рад тебя видеть в FlashMessenger! 🌟" },
+                        { from: this.currentUser.id, to: 1, text: "Привет! Классный мессенджер!" },
+                        { from: 1, to: this.currentUser.id, text: "Да, здесь можно общаться с любого устройства! 📱💻" },
+                        { from: 3, to: this.currentUser.id, text: "Добро пожаловать в наше сообщество! 👋" },
+                        { from: 5, to: this.currentUser.id, text: "Привет! Как тебе приложение?" }
+                    ];
+
+                    demoMessages.forEach((demo, index) => {
+                        const message = {
+                            id: Date.now() + index,
+                            from: demo.from,
+                            to: demo.to,
+                            text: demo.text,
+                            timestamp: new Date(Date.now() - 1000 * 60 * 60 * (index + 1)).toISOString(),
+                            read: true,
+                            device: { platform: "Demo", userAgent: "FlashMessenger Demo" }
+                        };
+                        this.messages.push(message);
+                    });
+
+                    this.saveToCloud();
                 }
             }
         }
 
-        const messenger = new FlashMessenger();
+        // ==================== UI MANAGEMENT ====================
+        const database = new CloudDatabase();
 
-        // UI Functions
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.remove('active');
@@ -1018,33 +1092,36 @@
         }
 
         function showAppTab(tabName) {
-            // Обновляем навигацию
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Update navigation
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
+            event.target.classList.add('active');
 
-            document.querySelector(`.nav-tab:nth-child(${getTabIndex(tabName)})`).classList.add('active');
-            document.getElementById(tabName + 'Tab').classList.add('active');
-
-            // Обновляем данные при переключении вкладок
-            if (tabName === 'friends') {
-                updateFriendsLists();
-            } else if (tabName === 'discover') {
-                updateDiscoverList();
+            // Load data for the tab
+            if (tabName === 'chats') {
+                loadChats();
             }
-        }
-
-        function getTabIndex(tabName) {
-            const tabs = { 'friends': 1, 'discover': 2, 'chat': 3 };
-            return tabs[tabName] || 1;
         }
 
         function togglePassword(inputId) {
             const input = document.getElementById(inputId);
-            input.type = input.type === 'password' ? 'text' : 'password';
+            const icon = input.nextElementSibling.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
         }
 
         function showNotification(message, type = 'success') {
@@ -1054,9 +1131,12 @@
             notification.textContent = message;
             document.body.appendChild(notification);
 
-            setTimeout(() => notification.remove(), 3000);
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
         }
 
+        // ==================== AUTHENTICATION ====================
         function register() {
             const username = document.getElementById('regUsername').value.trim();
             const password = document.getElementById('regPassword').value;
@@ -1073,9 +1153,9 @@
             }
 
             try {
-                const user = messenger.register(username, password);
-                showNotification('Аккаунт создан!');
-                messenger.currentUser = user;
+                const user = database.register(username, password);
+                showNotification('Аккаунт успешно создан!');
+                database.currentUser = user;
                 setTimeout(() => showMainApp(), 1000);
             } catch (error) {
                 showNotification(error.message, 'error');
@@ -1092,8 +1172,8 @@
             }
 
             try {
-                const user = messenger.login(username, password);
-                showNotification('Добро пожаловать!');
+                const user = database.login(username, password);
+                showNotification(`Добро пожаловать, ${user.username}!`);
                 setTimeout(() => showMainApp(), 1000);
             } catch (error) {
                 showNotification(error.message, 'error');
@@ -1102,311 +1182,102 @@
 
         function showMainApp() {
             showScreen('mainApp');
-            document.getElementById('userAvatar').textContent = messenger.currentUser.avatar;
-            document.getElementById('userGreeting').textContent = `Привет, ${messenger.currentUser.username}!`;
-            updateFriendsLists();
-            updateDiscoverList();
+            document.getElementById('userAvatar').textContent = database.currentUser.avatar;
+            document.getElementById('userName').textContent = database.currentUser.username;
+            
+            // Создаем демо-чаты для нового пользователя
+            database.createDemoChats();
+            loadChats();
         }
 
         function logout() {
-            messenger.logout();
+            if (database.currentUser) {
+                database.currentUser.online = false;
+                database.currentUser.lastSeen = new Date().toISOString();
+                database.saveToCloud();
+            }
+            database.currentUser = null;
             showScreen('welcomeScreen');
             showNotification('Вы вышли из системы');
         }
 
-        function updateFriendsLists() {
-            const requests = messenger.getFriendRequests();
-            const onlineFriends = messenger.getOnlineFriends();
-            const allFriends = messenger.getFriends();
+        // ==================== CHAT MANAGEMENT ====================
+        function loadChats() {
+            const chats = database.getChats();
+            const chatList = document.getElementById('chatList');
 
-            // Обновляем счетчики
-            document.getElementById('requestsCount').textContent = `(${requests.length})`;
-            document.getElementById('onlineCount').textContent = `(${onlineFriends.length})`;
-            document.getElementById('allFriendsCount').textContent = `(${allFriends.length})`;
-
-            // Заявки в друзья
-            const requestsList = document.getElementById('friendRequestsList');
-            if (requests.length > 0) {
-                requestsList.innerHTML = requests.map(user => `
-                    <div class="request-item">
-                        <div class="friend-avatar">
-                            ${user.avatar}
-                            <div class="status-indicator ${user.online ? 'status-online' : 'status-offline'}"></div>
+            if (chats.length > 0) {
+                chatList.innerHTML = chats.map(chat => `
+                    <div class="chat-item" onclick="openChat(${chat.partner.id})">
+                        <div class="chat-avatar">
+                            ${chat.partner.avatar}
+                            <div class="status-indicator ${chat.partner.online ? 'status-online' : 'status-offline'}"></div>
                         </div>
-                        <div class="friend-info">
-                            <div class="friend-name">${user.username}</div>
-                            <div class="friend-status">${user.online ? '🟢 В сети' : '⚫ Не в сети'} • Хочет добавить вас в друзья</div>
+                        <div class="chat-info">
+                            <div class="chat-name">${chat.partner.username}</div>
+                            <div class="chat-last-message">${chat.lastMessage?.text || 'Нет сообщений'}</div>
                         </div>
-                        <div class="request-actions">
-                            <button class="action-btn accept-btn" onclick="acceptRequest(${user.id})">
-                                <i class="fas fa-check"></i>
-                            </button>
-                            <button class="action-btn decline-btn" onclick="declineRequest(${user.id})">
-                                <i class="fas fa-times"></i>
-                            </button>
+                        <div class="chat-meta">
+                            <div class="chat-time">${formatTime(chat.lastMessage?.timestamp)}</div>
+                            ${chat.unread > 0 ? `<div class="unread-badge">${chat.unread}</div>` : ''}
                         </div>
                     </div>
                 `).join('');
             } else {
-                requestsList.innerHTML = '<div class="empty-state"><i class="fas fa-user-clock"></i><div>Нет новых заявок</div></div>';
-            }
-
-            // Друзья онлайн
-            const onlineList = document.getElementById('onlineFriendsList');
-            if (onlineFriends.length > 0) {
-                onlineList.innerHTML = onlineFriends.map(user => `
-                    <div class="friend-item" onclick="openChat(${user.id})">
-                        <div class="friend-avatar">
-                            ${user.avatar}
-                            <div class="status-indicator status-online"></div>
-                        </div>
-                        <div class="friend-info">
-                            <div class="friend-name">${user.username}</div>
-                            <div class="friend-status">🟢 В сети • Напишите сообщение</div>
-                        </div>
-                        <div class="friend-actions">
-                            <button class="action-btn" onclick="openChat(${user.id})">
-                                <i class="fas fa-comment"></i>
-                            </button>
-                        </div>
+                chatList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-comments"></i>
+                        <h3>Нет чатов</h3>
+                        <p>Начните общение с другими пользователями</p>
                     </div>
-                `).join('');
-            } else {
-                onlineList.innerHTML = '<div class="empty-state"><i class="fas fa-user"></i><div>Нет друзей онлайн</div></div>';
-            }
-
-            // Все друзья
-            const allList = document.getElementById('allFriendsList');
-            if (allFriends.length > 0) {
-                allList.innerHTML = allFriends.map(user => `
-                    <div class="friend-item" onclick="openChat(${user.id})">
-                        <div class="friend-avatar">
-                            ${user.avatar}
-                            <div class="status-indicator ${user.online ? 'status-online' : 'status-offline'}"></div>
-                        </div>
-                        <div class="friend-info">
-                            <div class="friend-name">${user.username}</div>
-                            <div class="friend-status">${user.online ? '🟢 В сети' : '⚫ Был(а) ' + formatLastSeen(user.lastSeen)}</div>
-                        </div>
-                        <div class="friend-actions">
-                            <button class="action-btn" onclick="openChat(${user.id})">
-                                <i class="fas fa-comment"></i>
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
-            } else {
-                allList.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><div>Пока нет друзей</div><div style="font-size: 12px; margin-top: 10px;">Найдите новых друзей во вкладке "Поиск"</div></div>';
-            }
-
-            // Бейдж заявок
-            const badge = document.getElementById('requestsBadge');
-            if (requests.length > 0) {
-                badge.textContent = requests.length;
-                badge.style.display = 'flex';
-            } else {
-                badge.style.display = 'none';
+                `;
             }
         }
 
-        function updateDiscoverList() {
-            const users = messenger.getDiscoverUsers();
-            const discoverList = document.getElementById('discoverUsersList');
+        function openChat(partnerId) {
+            const partner = database.users.find(u => u.id === partnerId);
+            database.currentChat = partner;
 
-            if (users.length > 0) {
-                discoverList.innerHTML = users.map(user => `
-                    <div class="user-item">
-                        <div class="friend-avatar">
-                            ${user.avatar}
-                            <div class="status-indicator ${user.online ? 'status-online' : 'status-offline'}"></div>
-                        </div>
-                        <div class="friend-info">
-                            <div class="friend-name">${user.username}</div>
-                            <div class="friend-status">${user.online ? '🟢 В сети' : '⚫ Не в сети'}</div>
-                        </div>
-                        <button class="add-friend-btn" onclick="addFriend(${user.id})">
-                            <i class="fas fa-user-plus"></i> Добавить
-                        </button>
-                    </div>
-                `).join('');
-            } else {
-                discoverList.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><div>Новых пользователей нет</div><div style="font-size: 12px; margin-top: 10px;">Все пользователи уже ваши друзья</div></div>';
-            }
-        }
+            // Show chat screen
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById('chatScreen').classList.add('active');
 
-        function searchFriends(query) {
-            // Простая фильтрация друзей
-            const allFriends = messenger.getFriends();
-            const onlineFriends = messenger.getOnlineFriends();
-            const requests = messenger.getFriendRequests();
+            // Update chat header
+            document.getElementById('currentChatAvatar').textContent = partner.avatar;
+            document.getElementById('currentChatAvatar').querySelector('.status-indicator').className = 
+                `status-indicator ${partner.online ? 'status-online' : 'status-offline'}`;
+            document.getElementById('currentChatName').textContent = partner.username;
+            document.getElementById('currentChatStatus').textContent = partner.online ? 'В сети' : 'Не в сети';
 
-            if (!query) {
-                updateFriendsLists();
-                return;
-            }
-
-            const filteredRequests = requests.filter(user => 
-                user.username.toLowerCase().includes(query.toLowerCase())
-            );
-            const filteredOnline = onlineFriends.filter(user => 
-                user.username.toLowerCase().includes(query.toLowerCase())
-            );
-            const filteredAll = allFriends.filter(user => 
-                user.username.toLowerCase().includes(query.toLowerCase())
-            );
-
-            // Обновляем списки с учетом поиска
-            document.getElementById('friendRequestsList').innerHTML = filteredRequests.length > 0 ? 
-                filteredRequests.map(user => `
-                    <div class="request-item">
-                        <div class="friend-avatar">
-                            ${user.avatar}
-                            <div class="status-indicator ${user.online ? 'status-online' : 'status-offline'}"></div>
-                        </div>
-                        <div class="friend-info">
-                            <div class="friend-name">${user.username}</div>
-                            <div class="friend-status">${user.online ? '🟢 В сети' : '⚫ Не в сети'} • Хочет добавить вас в друзья</div>
-                        </div>
-                        <div class="request-actions">
-                            <button class="action-btn accept-btn" onclick="acceptRequest(${user.id})">
-                                <i class="fas fa-check"></i>
-                            </button>
-                            <button class="action-btn decline-btn" onclick="declineRequest(${user.id})">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                `).join('') : '<div class="empty-state"><i class="fas fa-search"></i><div>Не найдено</div></div>';
-
-            document.getElementById('onlineFriendsList').innerHTML = filteredOnline.length > 0 ? 
-                filteredOnline.map(user => `
-                    <div class="friend-item" onclick="openChat(${user.id})">
-                        <div class="friend-avatar">
-                            ${user.avatar}
-                            <div class="status-indicator status-online"></div>
-                        </div>
-                        <div class="friend-info">
-                            <div class="friend-name">${user.username}</div>
-                            <div class="friend-status">🟢 В сети • Напишите сообщение</div>
-                        </div>
-                        <div class="friend-actions">
-                            <button class="action-btn" onclick="openChat(${user.id})">
-                                <i class="fas fa-comment"></i>
-                            </button>
-                        </div>
-                    </div>
-                `).join('') : '<div class="empty-state"><i class="fas fa-search"></i><div>Не найдено</div></div>';
-
-            document.getElementById('allFriendsList').innerHTML = filteredAll.length > 0 ? 
-                filteredAll.map(user => `
-                    <div class="friend-item" onclick="openChat(${user.id})">
-                        <div class="friend-avatar">
-                            ${user.avatar}
-                            <div class="status-indicator ${user.online ? 'status-online' : 'status-offline'}"></div>
-                        </div>
-                        <div class="friend-info">
-                            <div class="friend-name">${user.username}</div>
-                            <div class="friend-status">${user.online ? '🟢 В сети' : '⚫ Был(а) ' + formatLastSeen(user.lastSeen)}</div>
-                        </div>
-                        <div class="friend-actions">
-                            <button class="action-btn" onclick="openChat(${user.id})">
-                                <i class="fas fa-comment"></i>
-                            </button>
-                        </div>
-                    </div>
-                `).join('') : '<div class="empty-state"><i class="fas fa-search"></i><div>Не найдено</div></div>';
-        }
-
-        function searchDiscover(query) {
-            const users = messenger.getDiscoverUsers();
-            const discoverList = document.getElementById('discoverUsersList');
-
-            if (!query) {
-                updateDiscoverList();
-                return;
-            }
-
-            const filteredUsers = users.filter(user => 
-                user.username.toLowerCase().includes(query.toLowerCase())
-            );
-
-            if (filteredUsers.length > 0) {
-                discoverList.innerHTML = filteredUsers.map(user => `
-                    <div class="user-item">
-                        <div class="friend-avatar">
-                            ${user.avatar}
-                            <div class="status-indicator ${user.online ? 'status-online' : 'status-offline'}"></div>
-                        </div>
-                        <div class="friend-info">
-                            <div class="friend-name">${user.username}</div>
-                            <div class="friend-status">${user.online ? '🟢 В сети' : '⚫ Не в сети'}</div>
-                        </div>
-                        <button class="add-friend-btn" onclick="addFriend(${user.id})">
-                            <i class="fas fa-user-plus"></i> Добавить
-                        </button>
-                    </div>
-                `).join('');
-            } else {
-                discoverList.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><div>Пользователи не найдены</div></div>';
-            }
-        }
-
-        function addFriend(userId) {
-            messenger.sendFriendRequest(userId);
-            showNotification('Заявка отправлена!');
-            updateDiscoverList();
-        }
-
-        function acceptRequest(userId) {
-            messenger.acceptFriendRequest(userId);
-            showNotification('Заявка принята!');
-            updateFriendsLists();
-            updateDiscoverList();
-        }
-
-        function declineRequest(userId) {
-            messenger.declineFriendRequest(userId);
-            showNotification('Заявка отклонена');
-            updateFriendsLists();
-        }
-
-        function openChat(userId) {
-            const user = messenger.users.find(u => u.id === userId);
-            messenger.currentChat = user;
-            
-            // Переключаемся на вкладку чата
-            showAppTab('chat');
-            
-            // Обновляем заголовок чата
-            document.getElementById('chatHeader').style.display = 'flex';
-            document.getElementById('chatTargetAvatar').textContent = user.avatar;
-            document.getElementById('chatTargetAvatar').querySelector('.status-indicator').className = 
-                `status-indicator ${user.online ? 'status-online' : 'status-offline'}`;
-            document.getElementById('chatTargetName').textContent = user.username;
-            document.getElementById('chatTargetStatus').textContent = user.online ? 'В сети' : 'Не в сети';
-            document.getElementById('chatTargetStatus').style.color = user.online ? 'var(--online)' : 'var(--offline)';
-            
-            // Активируем поле ввода
+            // Enable message input
             document.getElementById('messageInput').disabled = false;
-            document.getElementById('messageInput').placeholder = `Напишите ${user.username}...`;
-            document.querySelector('.send-btn').disabled = false;
-            
+            document.getElementById('messageInput').placeholder = `Сообщение для ${partner.username}...`;
+            document.getElementById('sendButton').disabled = false;
+
             loadChatHistory();
         }
 
         function loadChatHistory() {
-            const messages = messenger.getChatHistory(messenger.currentChat.id);
+            const messages = database.getMessageHistory(database.currentChat.id);
             const chatMessages = document.getElementById('chatMessages');
 
             if (messages.length > 0) {
                 chatMessages.innerHTML = messages.map(msg => `
-                    <div class="message ${msg.from === messenger.currentUser.id ? 'sent' : 'received'}">
+                    <div class="message ${msg.from === database.currentUser.id ? 'sent' : 'received'}">
                         ${msg.text}
-                        <div class="message-time">${formatTime(msg.timestamp)}</div>
+                        <div class="message-time">${formatTime(msg.timestamp)} • ${getDeviceIcon(msg.device)}</div>
                     </div>
                 `).join('');
             } else {
-                chatMessages.innerHTML = '<div class="empty-state"><i class="fas fa-comments"></i><div>Начните общение!</div><div style="font-size: 12px; margin-top: 10px;">Отправьте первое сообщение</div></div>';
+                chatMessages.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-comments"></i>
+                        <h3>Начните общение</h3>
+                        <p>Отправьте первое сообщение ${database.currentChat.username}</p>
+                    </div>
+                `;
             }
 
             chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -1416,25 +1287,18 @@
             const input = document.getElementById('messageInput');
             const text = input.value.trim();
 
-            if (!text || !messenger.currentChat) return;
+            if (!text || !database.currentChat) return;
 
-            const message = messenger.sendMessage(messenger.currentChat.id, text);
+            const message = database.sendMessage(database.currentChat.id, text);
             addMessageToChat(message, true);
             input.value = '';
-
-            // Авто-ответ
-            setTimeout(() => {
-                const replies = ['Привет!', 'Как дела?', 'Интересно!', 'Спасибо!', 'Отлично!', 'Что нового?'];
-                const replyText = replies[Math.floor(Math.random() * replies.length)];
-                const replyMessage = messenger.sendMessage(messenger.currentUser.id, replyText);
-                addMessageToChat(replyMessage, false);
-            }, 1000 + Math.random() * 2000);
         }
 
         function addMessageToChat(message, isSent) {
             const chatMessages = document.getElementById('chatMessages');
             
-            if (chatMessages.innerHTML.includes('Начните общение')) {
+            // Remove empty state if present
+            if (chatMessages.querySelector('.empty-state')) {
                 chatMessages.innerHTML = '';
             }
 
@@ -1442,35 +1306,45 @@
             messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
             messageDiv.innerHTML = `
                 ${message.text}
-                <div class="message-time">${formatTime(message.timestamp)}</div>
+                <div class="message-time">${formatTime(message.timestamp)} • ${getDeviceIcon(message.device)}</div>
             `;
+            
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
+        // ==================== UTILITIES ====================
         function formatTime(timestamp) {
-            return new Date(timestamp).toLocaleTimeString('ru-RU', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
-            });
-        }
-
-        function formatLastSeen(timestamp) {
+            if (!timestamp) return '';
             const date = new Date(timestamp);
             const now = new Date();
             const diff = now - date;
-            const minutes = Math.floor(diff / 60000);
-            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
-            if (minutes < 1) return 'только что';
-            if (minutes < 60) return `${minutes} мин назад`;
-            return `${hours} ч назад`;
+            if (days === 0) {
+                return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+            } else if (days === 1) {
+                return 'Вчера';
+            } else {
+                return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
+            }
         }
 
-        // Создаем частицы
+        function getDeviceIcon(device) {
+            if (!device) return '📱';
+            if (device.platform?.includes('Win')) return '💻';
+            if (device.platform?.includes('Mac')) return '💻';
+            if (device.platform?.includes('Linux')) return '💻';
+            if (device.userAgent?.includes('Mobile')) return '📱';
+            if (device.platform === 'Cross-Device') return '☁️';
+            if (device.platform === 'Demo') return '🌟';
+            return '📱';
+        }
+
+        // ==================== INITIALIZATION ====================
         function createParticles() {
             const container = document.getElementById('particles');
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 15; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
                 particle.style.width = Math.random() * 60 + 20 + 'px';
@@ -1483,11 +1357,20 @@
             }
         }
 
-        // Инициализация
+        // Auto-login for demo
+        function autoLogin() {
+            try {
+                const user = database.login('Анна', '1234');
+                showMainApp();
+            } catch (e) {
+                // Stay on welcome screen
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             createParticles();
             
-            // Поддержка Enter
+            // Enter key support
             document.getElementById('regPassword').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') register();
             });
@@ -1498,37 +1381,15 @@
                 if (e.key === 'Enter') sendMessage();
             });
 
-            // Обновление статусов каждые 10 секунд
-            setInterval(() => {
-                if (messenger.currentUser) {
-                    // Случайным образом меняем статусы демо-пользователей
-                    messenger.users.forEach(user => {
-                        if (user.id !== messenger.currentUser.id && Math.random() > 0.7) {
-                            user.online = !user.online;
-                            user.lastSeen = new Date().toISOString();
-                        }
-                    });
-                    messenger.saveAll();
-                    
-                    // Обновляем интерфейс если нужно
-                    const currentTab = document.querySelector('.tab-content.active').id;
-                    if (currentTab === 'friendsTab') {
-                        updateFriendsLists();
-                    } else if (currentTab === 'discoverTab') {
-                        updateDiscoverList();
-                    } else if (currentTab === 'chatTab' && messenger.currentChat) {
-                        // Обновляем статус в чате
-                        const user = messenger.users.find(u => u.id === messenger.currentChat.id);
-                        if (user) {
-                            document.getElementById('chatTargetStatus').textContent = user.online ? 'В сети' : 'Не в сети';
-                            document.getElementById('chatTargetStatus').style.color = user.online ? 'var(--online)' : 'var(--offline)';
-                            document.getElementById('chatTargetAvatar').querySelector('.status-indicator').className = 
-                                `status-indicator ${user.online ? 'status-online' : 'status-offline'}`;
-                        }
-                    }
-                }
-            }, 10000);
+            // Try auto-login for demo
+            autoLogin();
         });
     </script>
+
+    <!-- Security Meta Tags -->
+    <meta name="description" content="FlashMessenger - безопасный мессенджер для общения на любых устройствах">
+    <meta name="keywords" content="мессенджер, чат, общение, безопасность, кросс-платформенный">
+    <meta name="author" content="FlashMessenger Team">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;">
 </body>
 </html>
