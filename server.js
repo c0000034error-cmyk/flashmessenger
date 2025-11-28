@@ -1,36 +1,17 @@
+// GitHub Pages работает только со статичными сайтами
+// Переносим всю логику на фронтенд
+
 const express = require('express');
-const http = require('http');
-const socketIo = require('socket.io');
-
 const app = express();
-const server = http.createServer(app);
-const io = socketIo(server);
+const path = require('path');
 
-app.use(express.json());
-app.use(express.static('.'));
+app.use(express.static(path.join(__dirname)));
 
-let users = [];
-let messages = [];
-
-app.post('/register', (req, res) => {
-  const { username } = req.body;
-  const user = { id: Date.now(), username };
-  users.push(user);
-  res.json({ success: true, user });
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.get('/search/:username', (req, res) => {
-  const foundUsers = users.filter(u => 
-    u.username.includes(req.params.username)
-  );
-  res.json(foundUsers);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
-
-io.on('connection', (socket) => {
-  socket.on('send_message', (data) => {
-    messages.push(data);
-    socket.broadcast.emit('receive_message', data);
-  });
-});
-
-server.listen(3001, () => console.log('Server running on port 3001'));
