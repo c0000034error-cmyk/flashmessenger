@@ -515,6 +515,22 @@
         .floating-action:hover {
             transform: scale(1.1) rotate(180deg);
         }
+
+        .switch-auth {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-secondary);
+        }
+
+        .switch-auth a {
+            color: var(--primary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .switch-auth a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -541,7 +557,7 @@
             </div>
         </div>
 
-        <!-- Auth Screens -->
+        <!-- Register Screen -->
         <div class="screen auth-screen" id="registerScreen">
             <button class="back-btn" onclick="showWelcome()">
                 <i class="fas fa-arrow-left"></i> Назад
@@ -566,9 +582,13 @@
                 <button class="submit-btn" onclick="register()">
                     <i class="fas fa-rocket"></i> Зарегистрироваться
                 </button>
+                <div class="switch-auth">
+                    Уже есть аккаунт? <a onclick="showAuth('login')">Войти</a>
+                </div>
             </div>
         </div>
 
+        <!-- Login Screen -->
         <div class="screen auth-screen" id="loginScreen">
             <button class="back-btn" onclick="showWelcome()">
                 <i class="fas fa-arrow-left"></i> Назад
@@ -587,6 +607,9 @@
                 <button class="submit-btn" onclick="login()">
                     <i class="fas fa-sign-in-alt"></i> Войти
                 </button>
+                <div class="switch-auth">
+                    Нет аккаунта? <a onclick="showAuth('register')">Зарегистрироваться</a>
+                </div>
             </div>
         </div>
 
@@ -613,7 +636,7 @@
                 <!-- Users will appear here -->
             </div>
 
-            <div class="floating-action" onclick="showAuth('register')" title="Новый пользователь">
+            <div class="floating-action" onclick="createNewUser()" title="Новый пользователь">
                 <i class="fas fa-user-plus"></i>
             </div>
         </div>
@@ -669,6 +692,10 @@
             register(username, password) {
                 if (this.users.find(u => u.username === username)) {
                     throw new Error('Пользователь с таким логином уже существует');
+                }
+
+                if (password.length < 4) {
+                    throw new Error('Пароль должен быть не менее 4 символов');
                 }
 
                 const user = {
@@ -824,20 +851,16 @@
                 return;
             }
 
-            if (password.length < 4) {
-                showNotification('Пароль должен быть не менее 4 символов', 'error');
-                return;
-            }
-
             try {
-                messenger.register(username, password);
+                const user = messenger.register(username, password);
                 showNotification('Аккаунт успешно создан!');
+                
+                // Auto login after registration
                 setTimeout(() => {
-                    document.getElementById('regUsername').value = '';
-                    document.getElementById('regPassword').value = '';
-                    document.getElementById('regConfirmPassword').value = '';
-                    showAuth('login');
+                    messenger.currentUser = user;
+                    showMainChat();
                 }, 1000);
+                
             } catch (error) {
                 showNotification(error.message, 'error');
             }
@@ -863,6 +886,7 @@
 
         function showMainChat() {
             document.getElementById('loginScreen').classList.remove('active');
+            document.getElementById('registerScreen').classList.remove('active');
             document.getElementById('mainChatScreen').style.display = 'flex';
             document.getElementById('userAvatar').textContent = messenger.currentUser.avatar;
             document.getElementById('userGreeting').textContent = `Привет, ${messenger.currentUser.username}!`;
@@ -875,6 +899,10 @@
             document.getElementById('chatContainer').style.display = 'none';
             showWelcome();
             showNotification('Вы вышли из системы');
+        }
+
+        function createNewUser() {
+            showAuth('register');
         }
 
         function searchUsers(query) {
@@ -951,13 +979,13 @@
             showTypingIndicator();
             setTimeout(() => {
                 hideTypingIndicator();
-                if (Math.random() > 0.5) {
-                    const replies = ['Привет!', 'Как дела?', 'Интересно...', 'Спасибо!', 'Отлично!'];
+                if (Math.random() > 0.3) {
+                    const replies = ['Привет!', 'Как дела?', 'Интересно...', 'Спасибо!', 'Отлично!', 'Что нового?', 'Здорово!'];
                     const replyText = replies[Math.floor(Math.random() * replies.length)];
                     const replyMessage = messenger.sendMessage(messenger.currentUser.id, replyText);
                     addMessageToChat(replyMessage, false);
                 }
-            }, 2000 + Math.random() * 2000);
+            }, 1500 + Math.random() * 2000);
         }
 
         function showTypingIndicator() {
