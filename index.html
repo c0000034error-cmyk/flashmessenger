@@ -1,281 +1,591 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>FlashMessenger</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlashMessenger ✨</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: Arial; margin: 20px; background: #f0f0f0; }
-        .container { max-width: 400px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }
-        input, button { padding: 10px; margin: 5px; width: 100%; box-sizing: border-box; }
-        button { background: #0088cc; color: white; border: none; cursor: pointer; }
-        .chat { border: 1px solid #ccc; height: 300px; overflow-y: scroll; padding: 10px; margin: 10px 0; }
-        .user { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
-        .user:hover { background: #f5f5f5; }
-        .message { margin: 5px 0; padding: 5px; }
-        .my-message { background: #e3f2fd; text-align: right; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            height: 90vh;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes messageSlide {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0088cc, #00a2ff);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .login-screen {
+            padding: 40px 30px;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .login-screen h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 25px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #0088cc;
+            box-shadow: 0 0 0 3px rgba(0, 136, 204, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #0088cc, #00a2ff);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 136, 204, 0.3);
+        }
+
+        .chat-screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chat-header {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e1e5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #0088cc, #00a2ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .search-box {
+            padding: 15px 20px;
+            background: #f8f9fa;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 1px solid #e1e5e9;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .users-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .user-item:hover {
+            background: #f0f2f5;
+            transform: translateX(5px);
+        }
+
+        .user-item.active {
+            background: #e3f2fd;
+        }
+
+        .chat-container {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f0f2f5;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 12px 16px;
+            margin-bottom: 15px;
+            border-radius: 18px;
+            position: relative;
+            animation: messageSlide 0.3s ease-out;
+        }
+
+        .message.sent {
+            background: #0088cc;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.received {
+            background: white;
+            color: #333;
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .message-time {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .message-input {
+            padding: 15px 20px;
+            background: white;
+            border-top: 1px solid #e1e5e9;
+            display: flex;
+            gap: 10px;
+        }
+
+        .message-input input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 1px solid #e1e5e9;
+            border-radius: 25px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .send-btn {
+            background: #0088cc;
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .send-btn:hover {
+            background: #0077b3;
+            transform: scale(1.1);
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #0088cc;
+            padding: 5px;
+        }
+
+        .typing-indicator {
+            padding: 10px 20px;
+            font-style: italic;
+            color: #666;
+            font-size: 12px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>🚀 FlashMessenger</h2>
-        
-        <div id="loginSection">
-            <input type="text" id="username" placeholder="Enter your username">
-            <button onclick="login()">Start Chatting</button>
+    <div class="app-container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-paper-plane"></i> FlashMessenger</h1>
         </div>
 
-        <div id="chatSection" style="display:none">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h3>Welcome, <span id="currentUsername"></span>!</h3>
-                <button onclick="logout()" style="width: auto;">Logout</button>
+        <!-- Login Screen -->
+        <div class="login-screen" id="loginScreen">
+            <h2>Welcome Back! 👋</h2>
+            <div class="input-group">
+                <input type="text" id="usernameInput" placeholder="Enter your username" maxlength="20">
             </div>
-            
-            <input type="text" id="searchUser" placeholder="Search users by username..." oninput="searchUsers(this.value)">
-            <div id="userList"></div>
-            
-            <div class="chat" id="chatBox"></div>
-            <div style="display: flex;">
-                <input type="text" id="messageInput" placeholder="Type your message..." style="flex: 1;">
-                <button onclick="sendMessage()" style="width: auto;">Send</button>
+            <button class="btn" onclick="login()">
+                <i class="fas fa-sign-in-alt"></i> Start Messaging
+            </button>
+        </div>
+
+        <!-- Main Chat Screen -->
+        <div class="chat-screen" id="chatScreen">
+            <div class="chat-header">
+                <div class="user-info">
+                    <div class="avatar" id="userAvatar">U</div>
+                    <div>
+                        <div id="userGreeting">Welcome!</div>
+                        <div style="font-size: 12px; opacity: 0.7;">Online</div>
+                    </div>
+                </div>
+                <button class="btn" onclick="logout()" style="width: auto; padding: 8px 15px;">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="userSearch" placeholder="Search users..." oninput="searchUsers(this.value)">
+            </div>
+
+            <div class="users-list" id="usersList">
+                <!-- Users will appear here -->
+            </div>
+        </div>
+
+        <!-- Individual Chat Screen -->
+        <div class="chat-container" id="chatContainer">
+            <div class="chat-header">
+                <button class="back-btn" onclick="closeChat()">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <div class="user-info">
+                    <div class="avatar" id="targetAvatar">U</div>
+                    <div>
+                        <div id="targetUsername">User</div>
+                        <div style="font-size: 12px; opacity: 0.7;" id="typingIndicator"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <!-- Messages will appear here -->
+            </div>
+
+            <div class="message-input">
+                <input type="text" id="messageInput" placeholder="Type a message..." 
+                       onkeypress="if(event.key === 'Enter') sendMessage()">
+                <button class="send-btn" onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
             </div>
         </div>
     </div>
 
     <script>
-        let users = JSON.parse(localStorage.getItem('flashmessenger_users')) || [];
-        let messages = JSON.parse(localStorage.getItem('flashmessenger_messages')) || [];
-        let currentUser = null;
-        let targetUser = null;
-
-        function login() {
-            const username = document.getElementById('username').value.trim();
-            if (!username) return alert('Please enter username');
-            
-            let user = users.find(u => u.username === username);
-            if (!user) {
-                user = { id: Date.now(), username };
-                users.push(user);
-                localStorage.setItem('flashmessenger_users', JSON.stringify(users));
+        // Enhanced data management
+        class FlashMessenger {
+            constructor() {
+                this.users = JSON.parse(localStorage.getItem('flash_users')) || [];
+                this.messages = JSON.parse(localStorage.getItem('flash_messages')) || [];
+                this.currentUser = null;
+                this.targetUser = null;
+                this.typingUsers = new Set();
             }
-            
-            currentUser = user;
-            document.getElementById('currentUsername').textContent = user.username;
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('chatSection').style.display = 'block';
-            loadUserList();
+
+            saveUsers() {
+                localStorage.setItem('flash_users', JSON.stringify(this.users));
+            }
+
+            saveMessages() {
+                localStorage.setItem('flash_messages', JSON.stringify(this.messages));
+            }
+
+            login(username) {
+                let user = this.users.find(u => u.username === username);
+                if (!user) {
+                    user = {
+                        id: Date.now(),
+                        username: username,
+                        avatar: username.charAt(0).toUpperCase(),
+                        joined: new Date().toISOString(),
+                        online: true
+                    };
+                    this.users.push(user);
+                    this.saveUsers();
+                }
+                this.currentUser = user;
+                return user;
+            }
+
+            searchUsers(query) {
+                if (!query) return this.users.filter(u => u.id !== this.currentUser.id);
+                return this.users.filter(u => 
+                    u.username.toLowerCase().includes(query.toLowerCase()) && 
+                    u.id !== this.currentUser.id
+                );
+            }
+
+            getChatHistory(userId1, userId2) {
+                return this.messages.filter(msg => 
+                    (msg.from === userId1 && msg.to === userId2) ||
+                    (msg.from === userId2 && msg.to === userId1)
+                ).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+            }
+
+            sendMessage(toUserId, text) {
+                const message = {
+                    id: Date.now(),
+                    from: this.currentUser.id,
+                    to: toUserId,
+                    text: text.trim(),
+                    timestamp: new Date().toISOString(),
+                    read: false
+                };
+                this.messages.push(message);
+                this.saveMessages();
+                return message;
+            }
+
+            markAsRead(userId) {
+                this.messages.forEach(msg => {
+                    if (msg.from === userId && msg.to === this.currentUser.id) {
+                        msg.read = true;
+                    }
+                });
+                this.saveMessages();
+            }
+        }
+
+        const messenger = new FlashMessenger();
+
+        // UI Functions
+        function login() {
+            const username = document.getElementById('usernameInput').value.trim();
+            if (!username) {
+                showNotification('Please enter a username');
+                return;
+            }
+
+            messenger.login(username);
+            showChatScreen();
         }
 
         function logout() {
-            currentUser = null;
-            document.getElementById('loginSection').style.display = 'block';
-            document.getElementById('chatSection').style.display = 'none';
+            messenger.currentUser = null;
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('chatScreen').style.display = 'none';
+            document.getElementById('usernameInput').value = '';
         }
 
-        function searchUsers(searchTerm) {
-            const filteredUsers = users.filter(user => 
-                user.username.toLowerCase().includes(searchTerm.toLowerCase()) &&
-                user.id !== currentUser.id
-            );
-            displayUsers(filteredUsers);
+        function showChatScreen() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('chatScreen').style.display = 'flex';
+            document.getElementById('userAvatar').textContent = messenger.currentUser.avatar;
+            document.getElementById('userGreeting').textContent = `Hello, ${messenger.currentUser.username}!`;
+            loadUsersList();
         }
 
-        function loadUserList() {
-            const otherUsers = users.filter(user => user.id !== currentUser.id);
-            displayUsers(otherUsers);
+        function searchUsers(query) {
+            const users = messenger.searchUsers(query);
+            displayUsers(users);
         }
 
-        function displayUsers(usersArray) {
-            const userList = document.getElementById('userList');
-            userList.innerHTML = usersArray.map(user => 
-                `<div class="user" onclick="startChat(${user.id}, '${user.username}')">👤 ${user.username}</div>`
-            ).join('');
+        function loadUsersList() {
+            const users = messenger.searchUsers('');
+            displayUsers(users);
         }
 
-        function startChat(userId, username) {
-            targetUser = { id: userId, username };
-            document.getElementById('chatBox').innerHTML = `<div style="text-align: center; color: #666;">Chat with ${username}</div>`;
-            loadMessages();
+        function displayUsers(users) {
+            const usersList = document.getElementById('usersList');
+            usersList.innerHTML = users.map(user => `
+                <div class="user-item" onclick="openChat(${user.id}, '${user.username}')">
+                    <div class="avatar" style="background: linear-gradient(135deg, #${getColorHash(user.username)}, #${getColorHash(user.username + '2')});">
+                        ${user.avatar}
+                    </div>
+                    <div>
+                        <div style="font-weight: 500;">${user.username}</div>
+                        <div style="font-size: 12px; color: #666;">Tap to message</div>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function loadMessages() {
-            const chatMessages = messages.filter(msg => 
-                (msg.from === currentUser.id && msg.to === targetUser.id) ||
-                (msg.from === targetUser.id && msg.to === currentUser.id)
-            );
+        function openChat(userId, username) {
+            messenger.targetUser = { id: userId, username };
+            document.getElementById('chatScreen').style.display = 'none';
+            document.getElementById('chatContainer').style.display = 'flex';
+            document.getElementById('targetUsername').textContent = username;
+            document.getElementById('targetAvatar').textContent = username.charAt(0).toUpperCase();
+            document.getElementById('targetAvatar').style.background = `linear-gradient(135deg, #${getColorHash(username)}, #${getColorHash(username + '2')})`;
             
-            const chatBox = document.getElementById('chatBox');
-            chatBox.innerHTML = `<div style="text-align: center; color: #666;">Chat with ${targetUser.username}</div>`;
+            loadChatHistory();
+            messenger.markAsRead(userId);
+        }
+
+        function closeChat() {
+            document.getElementById('chatContainer').style.display = 'none';
+            document.getElementById('chatScreen').style.display = 'flex';
+            messenger.targetUser = null;
+            loadUsersList();
+        }
+
+        function loadChatHistory() {
+            const messages = messenger.getChatHistory(messenger.currentUser.id, messenger.targetUser.id);
+            const chatMessages = document.getElementById('chatMessages');
             
-            chatMessages.forEach(msg => {
-                addMessageToChat(msg, msg.from === currentUser.id);
-            });
+            chatMessages.innerHTML = messages.map(msg => `
+                <div class="message ${msg.from === messenger.currentUser.id ? 'sent' : 'received'}">
+                    ${msg.text}
+                    <div class="message-time">${formatTime(msg.timestamp)}</div>
+                </div>
+            `).join('');
+            
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
         function sendMessage() {
-            const messageText = document.getElementById('messageInput').value.trim();
-            if (!messageText || !targetUser) return;
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            
+            if (!text || !messenger.targetUser) return;
 
-            const message = {
-                id: Date.now(),
-                from: currentUser.id,
-                to: targetUser.id,
-                text: messageText,
-                timestamp: new Date().toLocaleTimeString()
-            };
-
-            messages.push(message);
-            localStorage.setItem('flashmessenger_messages', JSON.stringify(messages));
+            const message = messenger.sendMessage(messenger.targetUser.id, text);
             addMessageToChat(message, true);
-            document.getElementById('messageInput').value = '';
+            input.value = '';
+
+            // Simulate reply (in real app, this would be WebSocket)
+            setTimeout(() => {
+                if (Math.random() > 0.7) { // 30% chance of auto-reply
+                    const replies = ['Hello!', 'Nice to hear from you!', 'I got your message', 'Thanks!', 'How are you?'];
+                    const replyText = replies[Math.floor(Math.random() * replies.length)];
+                    const replyMessage = messenger.sendMessage(messenger.currentUser.id, replyText);
+                    addMessageToChat(replyMessage, false);
+                }
+            }, 1000 + Math.random() * 2000);
         }
 
-        function addMessageToChat(message, isMyMessage) {
-            const chatBox = document.getElementById('chatBox');
+        function addMessageToChat(message, isSent) {
+            const chatMessages = document.getElementById('chatMessages');
             const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isMyMessage ? 'my-message' : ''}`;
-            messageDiv.innerHTML = `<div><strong>${isMyMessage ? 'You' : targetUser.username}:</strong> ${message.text}</div><small>${message.timestamp}</small>`;
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
+            messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
+            messageDiv.style.animation = 'messageSlide 0.3s ease-out';
+            messageDiv.innerHTML = `
+                ${message.text}
+                <div class="message-time">${formatTime(message.timestamp)}</div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
-    </script>
-</body>
-</html><!DOCTYPE html>
-<html>
-<head>
-    <title>FlashMessenger</title>
-    <style>
-        body { font-family: Arial; margin: 20px; background: #f0f0f0; }
-        .container { max-width: 400px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }
-        input, button { padding: 10px; margin: 5px; width: 100%; box-sizing: border-box; }
-        button { background: #0088cc; color: white; border: none; cursor: pointer; }
-        .chat { border: 1px solid #ccc; height: 300px; overflow-y: scroll; padding: 10px; margin: 10px 0; }
-        .user { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
-        .user:hover { background: #f5f5f5; }
-        .message { margin: 5px 0; padding: 5px; }
-        .my-message { background: #e3f2fd; text-align: right; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h2>🚀 FlashMessenger</h2>
-        
-        <div id="loginSection">
-            <input type="text" id="username" placeholder="Enter your username">
-            <button onclick="login()">Start Chatting</button>
-        </div>
 
-        <div id="chatSection" style="display:none">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h3>Welcome, <span id="currentUsername"></span>!</h3>
-                <button onclick="logout()" style="width: auto;">Logout</button>
-            </div>
-            
-            <input type="text" id="searchUser" placeholder="Search users by username..." oninput="searchUsers(this.value)">
-            <div id="userList"></div>
-            
-            <div class="chat" id="chatBox"></div>
-            <div style="display: flex;">
-                <input type="text" id="messageInput" placeholder="Type your message..." style="flex: 1;">
-                <button onclick="sendMessage()" style="width: auto;">Send</button>
-            </div>
-        </div>
-    </div>
+        function formatTime(timestamp) {
+            return new Date(timestamp).toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+        }
 
-    <script>
-        let users = JSON.parse(localStorage.getItem('flashmessenger_users')) || [];
-        let messages = JSON.parse(localStorage.getItem('flashmessenger_messages')) || [];
-        let currentUser = null;
-        let targetUser = null;
-
-        function login() {
-            const username = document.getElementById('username').value.trim();
-            if (!username) return alert('Please enter username');
-            
-            let user = users.find(u => u.username === username);
-            if (!user) {
-                user = { id: Date.now(), username };
-                users.push(user);
-                localStorage.setItem('flashmessenger_users', JSON.stringify(users));
+        function getColorHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
             }
-            
-            currentUser = user;
-            document.getElementById('currentUsername').textContent = user.username;
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('chatSection').style.display = 'block';
-            loadUserList();
+            const color = (hash & 0x00FFFFFF).toString(16).toUpperCase();
+            return '00000'.substring(0, 6 - color.length) + color;
         }
 
-        function logout() {
-            currentUser = null;
-            document.getElementById('loginSection').style.display = 'block';
-            document.getElementById('chatSection').style.display = 'none';
+        function showNotification(message) {
+            // Simple notification implementation
+            alert(message);
         }
 
-        function searchUsers(searchTerm) {
-            const filteredUsers = users.filter(user => 
-                user.username.toLowerCase().includes(searchTerm.toLowerCase()) &&
-                user.id !== currentUser.id
-            );
-            displayUsers(filteredUsers);
-        }
+        // Enter key support
+        document.getElementById('usernameInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') login();
+        });
 
-        function loadUserList() {
-            const otherUsers = users.filter(user => user.id !== currentUser.id);
-            displayUsers(otherUsers);
-        }
-
-        function displayUsers(usersArray) {
-            const userList = document.getElementById('userList');
-            userList.innerHTML = usersArray.map(user => 
-                `<div class="user" onclick="startChat(${user.id}, '${user.username}')">👤 ${user.username}</div>`
-            ).join('');
-        }
-
-        function startChat(userId, username) {
-            targetUser = { id: userId, username };
-            document.getElementById('chatBox').innerHTML = `<div style="text-align: center; color: #666;">Chat with ${username}</div>`;
-            loadMessages();
-        }
-
-        function loadMessages() {
-            const chatMessages = messages.filter(msg => 
-                (msg.from === currentUser.id && msg.to === targetUser.id) ||
-                (msg.from === targetUser.id && msg.to === currentUser.id)
-            );
-            
-            const chatBox = document.getElementById('chatBox');
-            chatBox.innerHTML = `<div style="text-align: center; color: #666;">Chat with ${targetUser.username}</div>`;
-            
-            chatMessages.forEach(msg => {
-                addMessageToChat(msg, msg.from === currentUser.id);
-            });
-        }
-
-        function sendMessage() {
-            const messageText = document.getElementById('messageInput').value.trim();
-            if (!messageText || !targetUser) return;
-
-            const message = {
-                id: Date.now(),
-                from: currentUser.id,
-                to: targetUser.id,
-                text: messageText,
-                timestamp: new Date().toLocaleTimeString()
-            };
-
-            messages.push(message);
-            localStorage.setItem('flashmessenger_messages', JSON.stringify(messages));
-            addMessageToChat(message, true);
-            document.getElementById('messageInput').value = '';
-        }
-
-        function addMessageToChat(message, isMyMessage) {
-            const chatBox = document.getElementById('chatBox');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isMyMessage ? 'my-message' : ''}`;
-            messageDiv.innerHTML = `<div><strong>${isMyMessage ? 'You' : targetUser.username}:</strong> ${message.text}</div><small>${message.timestamp}</small>`;
-            chatBox.appendChild(messageDiv);
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
+        // Auto-load users every 5 seconds to simulate real-time updates
+        setInterval(() => {
+            if (messenger.currentUser && !messenger.targetUser) {
+                loadUsersList();
+            }
+        }, 5000);
     </script>
 </body>
 </html>
