@@ -25,6 +25,7 @@
             --warning: #ff9800;
             --online: #4caf50;
             --offline: #666;
+            --away: #ff9800;
         }
 
         body {
@@ -85,11 +86,12 @@
             display: flex;
             background: var(--surface-light);
             border-bottom: 1px solid var(--surface);
+            padding: 0 10px;
         }
 
         .nav-tab {
             flex: 1;
-            padding: 15px;
+            padding: 15px 10px;
             text-align: center;
             background: none;
             border: none;
@@ -97,21 +99,14 @@
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
+            font-size: 12px;
+            border-radius: 10px 10px 0 0;
+            margin: 0 5px;
         }
 
         .nav-tab.active {
             color: var(--primary);
-        }
-
-        .nav-tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 20%;
-            right: 20%;
-            height: 3px;
-            background: var(--primary);
-            border-radius: 3px;
+            background: var(--surface);
         }
 
         .nav-tab .badge {
@@ -127,6 +122,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .nav-tab i {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 5px;
         }
 
         /* Экраны */
@@ -299,15 +300,26 @@
             position: relative;
         }
 
-        .online-status {
+        .status-indicator {
             position: absolute;
             bottom: 2px;
             right: 2px;
             width: 12px;
             height: 12px;
-            background: var(--online);
             border: 2px solid var(--surface);
             border-radius: 50%;
+        }
+
+        .status-online {
+            background: var(--online);
+        }
+
+        .status-offline {
+            background: var(--offline);
+        }
+
+        .status-away {
+            background: var(--away);
         }
 
         .search-box {
@@ -330,6 +342,17 @@
             flex: 1;
             overflow-y: auto;
             padding: 10px;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .tab-content.active {
+            display: flex;
         }
 
         /* Friends List */
@@ -470,6 +493,15 @@
         }
 
         /* Chat */
+        .chat-header {
+            padding: 15px 20px;
+            background: var(--surface-light);
+            border-bottom: 1px solid var(--surface);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
         .chat-messages {
             flex: 1;
             padding: 20px;
@@ -578,6 +610,15 @@
             margin-bottom: 15px;
             opacity: 0.5;
         }
+
+        .back-to-friends {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 5px;
+        }
     </style>
 </head>
 <body>
@@ -664,15 +705,18 @@
         <div class="screen" id="mainApp">
             <!-- Навигация -->
             <div class="nav-tabs">
-                <button class="nav-tab active" onclick="showTab('friends')">
+                <button class="nav-tab active" onclick="showAppTab('friends')">
                     <i class="fas fa-user-friends"></i>
+                    <div>Друзья</div>
                     <span class="badge" id="requestsBadge" style="display: none;">0</span>
                 </button>
-                <button class="nav-tab" onclick="showTab('discover')">
+                <button class="nav-tab" onclick="showAppTab('discover')">
                     <i class="fas fa-search"></i>
+                    <div>Поиск</div>
                 </button>
-                <button class="nav-tab" onclick="showTab('chat')">
+                <button class="nav-tab" onclick="showAppTab('chat')">
                     <i class="fas fa-comment"></i>
+                    <div>Чат</div>
                 </button>
             </div>
 
@@ -681,7 +725,7 @@
                 <div class="user-info">
                     <div class="avatar" id="userAvatar">
                         U
-                        <div class="online-status"></div>
+                        <div class="status-indicator status-online"></div>
                     </div>
                     <div>
                         <div id="userGreeting">Добро пожаловать!</div>
@@ -693,29 +737,27 @@
                 </div>
             </div>
 
-            <!-- Поиск -->
-            <div class="search-box">
-                <input type="text" id="globalSearch" placeholder="Поиск..." oninput="handleSearch(this.value)">
-            </div>
-
             <!-- Контент -->
             <div class="content-area">
                 <!-- Друзья -->
                 <div class="tab-content active" id="friendsTab">
+                    <div class="search-box">
+                        <input type="text" id="friendsSearch" placeholder="Поиск друзей..." oninput="searchFriends(this.value)">
+                    </div>
                     <div class="friends-section">
-                        <div class="section-title">Заявки в друзья</div>
+                        <div class="section-title">Заявки в друзья <span id="requestsCount">(0)</span></div>
                         <div id="friendRequestsList">
                             <!-- Заявки будут здесь -->
                         </div>
                     </div>
                     <div class="friends-section">
-                        <div class="section-title">Друзья онлайн</div>
+                        <div class="section-title">Друзья онлайн <span id="onlineCount">(0)</span></div>
                         <div id="onlineFriendsList">
                             <!-- Друзья онлайн -->
                         </div>
                     </div>
                     <div class="friends-section">
-                        <div class="section-title">Все друзья</div>
+                        <div class="section-title">Все друзья <span id="allFriendsCount">(0)</span></div>
                         <div id="allFriendsList">
                             <!-- Все друзья -->
                         </div>
@@ -724,6 +766,9 @@
 
                 <!-- Поиск людей -->
                 <div class="tab-content" id="discoverTab">
+                    <div class="search-box">
+                        <input type="text" id="discoverSearch" placeholder="Поиск пользователей..." oninput="searchDiscover(this.value)">
+                    </div>
                     <div id="discoverUsersList">
                         <!-- Пользователи для добавления -->
                     </div>
@@ -731,14 +776,28 @@
 
                 <!-- Чат -->
                 <div class="tab-content" id="chatTab">
+                    <div class="chat-header" id="chatHeader" style="display: none;">
+                        <button class="back-to-friends" onclick="showAppTab('friends')">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <div class="avatar" id="chatTargetAvatar">
+                            U
+                            <div class="status-indicator status-offline"></div>
+                        </div>
+                        <div>
+                            <div id="chatTargetName">Пользователь</div>
+                            <div id="chatTargetStatus" style="font-size: 12px; opacity: 0.7;">Не в сети</div>
+                        </div>
+                    </div>
                     <div class="chat-messages" id="chatMessages">
                         <div class="empty-state">
                             <i class="fas fa-comments"></i>
                             <div>Выберите друга для общения</div>
+                            <div style="font-size: 12px; margin-top: 10px;">Перейдите в раздел "Друзья"</div>
                         </div>
                     </div>
                     <div class="message-input">
-                        <input type="text" id="messageInput" placeholder="Напишите сообщение..." disabled>
+                        <input type="text" id="messageInput" placeholder="Выберите друга для общения..." disabled>
                         <button class="send-btn" onclick="sendMessage()" disabled>
                             <i class="fas fa-paper-plane"></i>
                         </button>
@@ -763,11 +822,11 @@
             createDemoData() {
                 if (this.users.length === 0) {
                     const demoUsers = [
-                        { username: 'Анна', password: '1234' },
-                        { username: 'Максим', password: '1234' },
-                        { username: 'София', password: '1234' },
-                        { username: 'Артем', password: '1234' },
-                        { username: 'Виктория', password: '1234' }
+                        { username: 'Анна', password: '1234', online: true },
+                        { username: 'Максим', password: '1234', online: false },
+                        { username: 'София', password: '1234', online: true },
+                        { username: 'Артем', password: '1234', online: false },
+                        { username: 'Виктория', password: '1234', online: true }
                     ];
 
                     demoUsers.forEach((demo, index) => {
@@ -776,7 +835,7 @@
                             username: demo.username,
                             password: btoa(demo.password),
                             avatar: demo.username.charAt(0),
-                            online: true,
+                            online: demo.online,
                             lastSeen: new Date().toISOString()
                         };
                         this.users.push(user);
@@ -786,7 +845,7 @@
                     this.friendships.push(
                         { userId: this.users[0].id, friendId: this.users[1].id, status: 'accepted' },
                         { userId: this.users[0].id, friendId: this.users[2].id, status: 'accepted' },
-                        { userId: this.users[1].id, friendId: this.users[3].id, status: 'pending' }
+                        { userId: this.users[1].id, friendId: this.users[0].id, status: 'pending' }
                     );
 
                     this.saveAll();
@@ -936,6 +995,16 @@
                     (msg.from === userId && msg.to === this.currentUser.id)
                 ).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
             }
+
+            // Обновление статусов
+            updateUserStatus(userId, online) {
+                const user = this.users.find(u => u.id === userId);
+                if (user) {
+                    user.online = online;
+                    user.lastSeen = new Date().toISOString();
+                    this.saveAll();
+                }
+            }
         }
 
         const messenger = new FlashMessenger();
@@ -948,7 +1017,8 @@
             document.getElementById(screenId).classList.add('active');
         }
 
-        function showTab(tabName) {
+        function showAppTab(tabName) {
+            // Обновляем навигацию
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -956,8 +1026,20 @@
                 content.classList.remove('active');
             });
 
-            event.target.classList.add('active');
+            document.querySelector(`.nav-tab:nth-child(${getTabIndex(tabName)})`).classList.add('active');
             document.getElementById(tabName + 'Tab').classList.add('active');
+
+            // Обновляем данные при переключении вкладок
+            if (tabName === 'friends') {
+                updateFriendsLists();
+            } else if (tabName === 'discover') {
+                updateDiscoverList();
+            }
+        }
+
+        function getTabIndex(tabName) {
+            const tabs = { 'friends': 1, 'discover': 2, 'chat': 3 };
+            return tabs[tabName] || 1;
         }
 
         function togglePassword(inputId) {
@@ -1037,15 +1119,23 @@
             const onlineFriends = messenger.getOnlineFriends();
             const allFriends = messenger.getFriends();
 
+            // Обновляем счетчики
+            document.getElementById('requestsCount').textContent = `(${requests.length})`;
+            document.getElementById('onlineCount').textContent = `(${onlineFriends.length})`;
+            document.getElementById('allFriendsCount').textContent = `(${allFriends.length})`;
+
             // Заявки в друзья
             const requestsList = document.getElementById('friendRequestsList');
             if (requests.length > 0) {
                 requestsList.innerHTML = requests.map(user => `
                     <div class="request-item">
-                        <div class="friend-avatar">${user.avatar}</div>
+                        <div class="friend-avatar">
+                            ${user.avatar}
+                            <div class="status-indicator ${user.online ? 'status-online' : 'status-offline'}"></div>
+                        </div>
                         <div class="friend-info">
                             <div class="friend-name">${user.username}</div>
-                            <div class="friend-status">Хочет добавить вас в друзья</div>
+                            <div class="friend-status">${user.online ? '🟢 В сети' : '⚫ Не в сети'} • Хочет добавить вас в друзья</div>
                         </div>
                         <div class="request-actions">
                             <button class="action-btn accept-btn" onclick="acceptRequest(${user.id})">
@@ -1068,11 +1158,11 @@
                     <div class="friend-item" onclick="openChat(${user.id})">
                         <div class="friend-avatar">
                             ${user.avatar}
-                            <div class="online-status"></div>
+                            <div class="status-indicator status-online"></div>
                         </div>
                         <div class="friend-info">
                             <div class="friend-name">${user.username}</div>
-                            <div class="friend-status">🟢 В сети</div>
+                            <div class="friend-status">🟢 В сети • Напишите сообщение</div>
                         </div>
                         <div class="friend-actions">
                             <button class="action-btn" onclick="openChat(${user.id})">
@@ -1090,7 +1180,10 @@
             if (allFriends.length > 0) {
                 allList.innerHTML = allFriends.map(user => `
                     <div class="friend-item" onclick="openChat(${user.id})">
-                        <div class="friend-avatar">${user.avatar}</div>
+                        <div class="friend-avatar">
+                            ${user.avatar}
+                            <div class="status-indicator ${user.online ? 'status-online' : 'status-offline'}"></div>
+                        </div>
                         <div class="friend-info">
                             <div class="friend-name">${user.username}</div>
                             <div class="friend-status">${user.online ? '🟢 В сети' : '⚫ Был(а) ' + formatLastSeen(user.lastSeen)}</div>
@@ -1103,7 +1196,7 @@
                     </div>
                 `).join('');
             } else {
-                allList.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><div>Пока нет друзей</div></div>';
+                allList.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><div>Пока нет друзей</div><div style="font-size: 12px; margin-top: 10px;">Найдите новых друзей во вкладке "Поиск"</div></div>';
             }
 
             // Бейдж заявок
@@ -1123,7 +1216,10 @@
             if (users.length > 0) {
                 discoverList.innerHTML = users.map(user => `
                     <div class="user-item">
-                        <div class="friend-avatar">${user.avatar}</div>
+                        <div class="friend-avatar">
+                            ${user.avatar}
+                            <div class="status-indicator ${user.online ? 'status-online' : 'status-offline'}"></div>
+                        </div>
                         <div class="friend-info">
                             <div class="friend-name">${user.username}</div>
                             <div class="friend-status">${user.online ? '🟢 В сети' : '⚫ Не в сети'}</div>
@@ -1134,7 +1230,124 @@
                     </div>
                 `).join('');
             } else {
-                discoverList.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><div>Новых пользователей нет</div></div>';
+                discoverList.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><div>Новых пользователей нет</div><div style="font-size: 12px; margin-top: 10px;">Все пользователи уже ваши друзья</div></div>';
+            }
+        }
+
+        function searchFriends(query) {
+            // Простая фильтрация друзей
+            const allFriends = messenger.getFriends();
+            const onlineFriends = messenger.getOnlineFriends();
+            const requests = messenger.getFriendRequests();
+
+            if (!query) {
+                updateFriendsLists();
+                return;
+            }
+
+            const filteredRequests = requests.filter(user => 
+                user.username.toLowerCase().includes(query.toLowerCase())
+            );
+            const filteredOnline = onlineFriends.filter(user => 
+                user.username.toLowerCase().includes(query.toLowerCase())
+            );
+            const filteredAll = allFriends.filter(user => 
+                user.username.toLowerCase().includes(query.toLowerCase())
+            );
+
+            // Обновляем списки с учетом поиска
+            document.getElementById('friendRequestsList').innerHTML = filteredRequests.length > 0 ? 
+                filteredRequests.map(user => `
+                    <div class="request-item">
+                        <div class="friend-avatar">
+                            ${user.avatar}
+                            <div class="status-indicator ${user.online ? 'status-online' : 'status-offline'}"></div>
+                        </div>
+                        <div class="friend-info">
+                            <div class="friend-name">${user.username}</div>
+                            <div class="friend-status">${user.online ? '🟢 В сети' : '⚫ Не в сети'} • Хочет добавить вас в друзья</div>
+                        </div>
+                        <div class="request-actions">
+                            <button class="action-btn accept-btn" onclick="acceptRequest(${user.id})">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="action-btn decline-btn" onclick="declineRequest(${user.id})">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('') : '<div class="empty-state"><i class="fas fa-search"></i><div>Не найдено</div></div>';
+
+            document.getElementById('onlineFriendsList').innerHTML = filteredOnline.length > 0 ? 
+                filteredOnline.map(user => `
+                    <div class="friend-item" onclick="openChat(${user.id})">
+                        <div class="friend-avatar">
+                            ${user.avatar}
+                            <div class="status-indicator status-online"></div>
+                        </div>
+                        <div class="friend-info">
+                            <div class="friend-name">${user.username}</div>
+                            <div class="friend-status">🟢 В сети • Напишите сообщение</div>
+                        </div>
+                        <div class="friend-actions">
+                            <button class="action-btn" onclick="openChat(${user.id})">
+                                <i class="fas fa-comment"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('') : '<div class="empty-state"><i class="fas fa-search"></i><div>Не найдено</div></div>';
+
+            document.getElementById('allFriendsList').innerHTML = filteredAll.length > 0 ? 
+                filteredAll.map(user => `
+                    <div class="friend-item" onclick="openChat(${user.id})">
+                        <div class="friend-avatar">
+                            ${user.avatar}
+                            <div class="status-indicator ${user.online ? 'status-online' : 'status-offline'}"></div>
+                        </div>
+                        <div class="friend-info">
+                            <div class="friend-name">${user.username}</div>
+                            <div class="friend-status">${user.online ? '🟢 В сети' : '⚫ Был(а) ' + formatLastSeen(user.lastSeen)}</div>
+                        </div>
+                        <div class="friend-actions">
+                            <button class="action-btn" onclick="openChat(${user.id})">
+                                <i class="fas fa-comment"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('') : '<div class="empty-state"><i class="fas fa-search"></i><div>Не найдено</div></div>';
+        }
+
+        function searchDiscover(query) {
+            const users = messenger.getDiscoverUsers();
+            const discoverList = document.getElementById('discoverUsersList');
+
+            if (!query) {
+                updateDiscoverList();
+                return;
+            }
+
+            const filteredUsers = users.filter(user => 
+                user.username.toLowerCase().includes(query.toLowerCase())
+            );
+
+            if (filteredUsers.length > 0) {
+                discoverList.innerHTML = filteredUsers.map(user => `
+                    <div class="user-item">
+                        <div class="friend-avatar">
+                            ${user.avatar}
+                            <div class="status-indicator ${user.online ? 'status-online' : 'status-offline'}"></div>
+                        </div>
+                        <div class="friend-info">
+                            <div class="friend-name">${user.username}</div>
+                            <div class="friend-status">${user.online ? '🟢 В сети' : '⚫ Не в сети'}</div>
+                        </div>
+                        <button class="add-friend-btn" onclick="addFriend(${user.id})">
+                            <i class="fas fa-user-plus"></i> Добавить
+                        </button>
+                    </div>
+                `).join('');
+            } else {
+                discoverList.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><div>Пользователи не найдены</div></div>';
             }
         }
 
@@ -1161,8 +1374,21 @@
             const user = messenger.users.find(u => u.id === userId);
             messenger.currentChat = user;
             
-            showTab('chat');
+            // Переключаемся на вкладку чата
+            showAppTab('chat');
+            
+            // Обновляем заголовок чата
+            document.getElementById('chatHeader').style.display = 'flex';
+            document.getElementById('chatTargetAvatar').textContent = user.avatar;
+            document.getElementById('chatTargetAvatar').querySelector('.status-indicator').className = 
+                `status-indicator ${user.online ? 'status-online' : 'status-offline'}`;
+            document.getElementById('chatTargetName').textContent = user.username;
+            document.getElementById('chatTargetStatus').textContent = user.online ? 'В сети' : 'Не в сети';
+            document.getElementById('chatTargetStatus').style.color = user.online ? 'var(--online)' : 'var(--offline)';
+            
+            // Активируем поле ввода
             document.getElementById('messageInput').disabled = false;
+            document.getElementById('messageInput').placeholder = `Напишите ${user.username}...`;
             document.querySelector('.send-btn').disabled = false;
             
             loadChatHistory();
@@ -1180,7 +1406,7 @@
                     </div>
                 `).join('');
             } else {
-                chatMessages.innerHTML = '<div class="empty-state"><i class="fas fa-comments"></i><div>Начните общение!</div></div>';
+                chatMessages.innerHTML = '<div class="empty-state"><i class="fas fa-comments"></i><div>Начните общение!</div><div style="font-size: 12px; margin-top: 10px;">Отправьте первое сообщение</div></div>';
             }
 
             chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -1198,7 +1424,7 @@
 
             // Авто-ответ
             setTimeout(() => {
-                const replies = ['Привет!', 'Как дела?', 'Интересно!', 'Спасибо!', 'Отлично!'];
+                const replies = ['Привет!', 'Как дела?', 'Интересно!', 'Спасибо!', 'Отлично!', 'Что нового?'];
                 const replyText = replies[Math.floor(Math.random() * replies.length)];
                 const replyMessage = messenger.sendMessage(messenger.currentUser.id, replyText);
                 addMessageToChat(replyMessage, false);
@@ -1220,27 +1446,6 @@
             `;
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function handleSearch(query) {
-            // Поиск по всем вкладкам
-            const currentTab = document.querySelector('.tab-content.active').id;
-            
-            if (currentTab === 'friendsTab') {
-                // Поиск по друзьям
-                const friends = messenger.getFriends();
-                const filtered = friends.filter(f => 
-                    f.username.toLowerCase().includes(query.toLowerCase())
-                );
-                // Обновляем список друзей с учетом поиска
-            } else if (currentTab === 'discoverTab') {
-                // Поиск по пользователям
-                const users = messenger.getDiscoverUsers();
-                const filtered = users.filter(u => 
-                    u.username.toLowerCase().includes(query.toLowerCase())
-                );
-                // Обновляем список пользователей
-            }
         }
 
         function formatTime(timestamp) {
@@ -1292,6 +1497,37 @@
             document.getElementById('messageInput').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') sendMessage();
             });
+
+            // Обновление статусов каждые 10 секунд
+            setInterval(() => {
+                if (messenger.currentUser) {
+                    // Случайным образом меняем статусы демо-пользователей
+                    messenger.users.forEach(user => {
+                        if (user.id !== messenger.currentUser.id && Math.random() > 0.7) {
+                            user.online = !user.online;
+                            user.lastSeen = new Date().toISOString();
+                        }
+                    });
+                    messenger.saveAll();
+                    
+                    // Обновляем интерфейс если нужно
+                    const currentTab = document.querySelector('.tab-content.active').id;
+                    if (currentTab === 'friendsTab') {
+                        updateFriendsLists();
+                    } else if (currentTab === 'discoverTab') {
+                        updateDiscoverList();
+                    } else if (currentTab === 'chatTab' && messenger.currentChat) {
+                        // Обновляем статус в чате
+                        const user = messenger.users.find(u => u.id === messenger.currentChat.id);
+                        if (user) {
+                            document.getElementById('chatTargetStatus').textContent = user.online ? 'В сети' : 'Не в сети';
+                            document.getElementById('chatTargetStatus').style.color = user.online ? 'var(--online)' : 'var(--offline)';
+                            document.getElementById('chatTargetAvatar').querySelector('.status-indicator').className = 
+                                `status-indicator ${user.online ? 'status-online' : 'status-offline'}`;
+                        }
+                    }
+                }
+            }, 10000);
         });
     </script>
 </body>
