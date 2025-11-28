@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,66 +12,210 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #8774e1;
+            --primary-dark: #6b5bbd;
+            --background: #0f0f0f;
+            --surface: #1a1a1a;
+            --surface-light: #2d2d2d;
+            --text: #ffffff;
+            --text-secondary: #a0a0a0;
+            --success: #4caf50;
+            --error: #f44336;
+            --warning: #ff9800;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            color: var(--text);
+            overflow: hidden;
         }
 
         .app-container {
             width: 100%;
-            max-width: 400px;
-            height: 90vh;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 420px;
+            height: 95vh;
+            background: var(--surface);
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            animation: slideUp 0.6s ease-out;
+            position: relative;
+            animation: containerAppear 1s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--surface-light);
         }
 
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        @keyframes containerAppear {
+            0% { 
+                transform: scale(0.8) translateY(100px); 
+                opacity: 0; 
+            }
+            100% { 
+                transform: scale(1) translateY(0); 
+                opacity: 1; 
+            }
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes slideInFromLeft {
+            0% { transform: translateX(-100px); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
         }
 
-        @keyframes messageSlide {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
+        @keyframes slideInFromRight {
+            0% { transform: translateX(100px); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            0% { transform: translateY(30px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(135, 116, 225, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(135, 116, 225, 0.6); }
+        }
+
+        @keyframes messageBounce {
+            0% { transform: scale(0.5); opacity: 0; }
+            70% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes typingAnimation {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .floating-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(135, 116, 225, 0.1);
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
         }
 
         .header {
-            background: linear-gradient(135deg, #0088cc, #00a2ff);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
-            padding: 20px;
+            padding: 25px 20px;
             text-align: center;
             position: relative;
+            z-index: 1;
+            animation: slideInFromLeft 0.8s ease-out;
         }
 
         .header h1 {
-            font-size: 24px;
-            font-weight: 600;
+            font-size: 26px;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
-        .login-screen {
-            padding: 40px 30px;
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1;
+        }
+
+        .welcome-screen {
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            animation: fadeIn 0.8s ease-out;
+            background: var(--surface);
         }
 
-        .login-screen h2 {
-            color: #333;
+        .auth-screen {
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(50px);
+            pointer-events: none;
+        }
+
+        .auth-screen.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: all;
+        }
+
+        .welcome-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--primary), #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        .welcome-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            animation: fadeInUp 1s ease-out 0.7s both;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+            animation: fadeInUp 1s ease-out 0.9s both;
+        }
+
+        .auth-btn {
+            padding: 15px 30px;
+            border: 2px solid var(--primary);
+            border-radius: 15px;
+            background: transparent;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: pulseGlow 2s infinite;
+        }
+
+        .auth-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .auth-form {
+            width: 100%;
+            max-width: 320px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .form-title {
+            font-size: 24px;
             margin-bottom: 30px;
-            font-size: 28px;
+            text-align: center;
+            color: var(--text);
         }
 
         .input-group {
@@ -81,82 +225,133 @@
 
         .input-group input {
             width: 100%;
-            padding: 15px 20px;
-            border: 2px solid #e1e5e9;
-            border-radius: 25px;
+            padding: 18px 20px;
+            background: var(--surface-light);
+            border: 2px solid transparent;
+            border-radius: 15px;
+            color: var(--text);
             font-size: 16px;
             transition: all 0.3s ease;
             outline: none;
         }
 
         .input-group input:focus {
-            border-color: #0088cc;
-            box-shadow: 0 0 0 3px rgba(0, 136, 204, 0.1);
+            border-color: var(--primary);
+            background: var(--surface);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(135, 116, 225, 0.2);
         }
 
-        .btn {
-            background: linear-gradient(135deg, #0088cc, #00a2ff);
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
+            border-radius: 15px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            width: 100%;
+            margin-top: 10px;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0, 136, 204, 0.3);
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(135, 116, 225, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: var(--primary);
         }
 
         .chat-screen {
             display: none;
             flex-direction: column;
             height: 100%;
+            background: var(--surface);
         }
 
         .chat-header {
-            padding: 15px 20px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e1e5e9;
+            padding: 20px;
+            background: var(--surface-light);
+            border-bottom: 1px solid var(--surface-light);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            animation: slideInFromRight 0.6s ease-out;
         }
 
         .user-info {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #0088cc, #00a2ff);
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: bold;
+            font-size: 18px;
+            animation: typingAnimation 2s infinite;
         }
 
         .search-box {
             padding: 15px 20px;
-            background: #f8f9fa;
+            background: var(--surface);
         }
 
         .search-box input {
             width: 100%;
-            padding: 12px 20px;
-            border: 1px solid #e1e5e9;
-            border-radius: 20px;
+            padding: 15px 20px;
+            background: var(--surface-light);
+            border: none;
+            border-radius: 25px;
+            color: var(--text);
             font-size: 14px;
             outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            background: var(--surface);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
         .users-list {
@@ -168,169 +363,286 @@
         .user-item {
             display: flex;
             align-items: center;
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 10px;
+            padding: 18px;
+            border-radius: 20px;
+            margin-bottom: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
-            animation: fadeIn 0.5s ease-out;
+            animation: slideInFromLeft 0.5s ease-out;
+            background: var(--surface-light);
         }
 
         .user-item:hover {
-            background: #f0f2f5;
-            transform: translateX(5px);
+            background: var(--primary);
+            transform: translateX(10px) scale(1.02);
         }
 
         .user-item.active {
-            background: #e3f2fd;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
         }
 
         .chat-container {
             display: none;
             flex-direction: column;
             height: 100%;
+            background: var(--surface);
         }
 
         .chat-messages {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
-            background: #f0f2f5;
+            background: var(--background);
         }
 
         .message {
-            max-width: 70%;
-            padding: 12px 16px;
-            margin-bottom: 15px;
-            border-radius: 18px;
+            max-width: 75%;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 25px;
             position: relative;
-            animation: messageSlide 0.3s ease-out;
+            animation: messageBounce 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            line-height: 1.4;
         }
 
         .message.sent {
-            background: #0088cc;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             margin-left: auto;
-            border-bottom-right-radius: 5px;
+            border-bottom-right-radius: 8px;
         }
 
         .message.received {
-            background: white;
-            color: #333;
-            border-bottom-left-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background: var(--surface-light);
+            color: var(--text);
+            border-bottom-left-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
         .message-time {
             font-size: 11px;
             opacity: 0.7;
-            margin-top: 5px;
+            margin-top: 8px;
             text-align: right;
         }
 
         .message-input {
-            padding: 15px 20px;
-            background: white;
-            border-top: 1px solid #e1e5e9;
+            padding: 20px;
+            background: var(--surface-light);
+            border-top: 1px solid var(--surface);
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            align-items: center;
         }
 
         .message-input input {
             flex: 1;
-            padding: 12px 20px;
-            border: 1px solid #e1e5e9;
+            padding: 15px 20px;
+            background: var(--surface);
+            border: none;
             border-radius: 25px;
+            color: var(--text);
             outline: none;
             font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .message-input input:focus {
+            background: var(--surface-light);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
         .send-btn {
-            background: #0088cc;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 18px;
         }
 
         .send-btn:hover {
-            background: #0077b3;
-            transform: scale(1.1);
-        }
-
-        .back-btn {
-            background: none;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            color: #0088cc;
-            padding: 5px;
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 10px 25px rgba(135, 116, 225, 0.4);
         }
 
         .typing-indicator {
             padding: 10px 20px;
-            font-style: italic;
-            color: #666;
+            color: var(--primary);
             font-size: 12px;
+            font-style: italic;
             animation: pulse 1.5s infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: var(--success);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            animation: slideInFromRight 0.5s ease-out;
+        }
+
+        .floating-action {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            animation: pulseGlow 3s infinite;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .floating-action:hover {
+            transform: scale(1.1) rotate(180deg);
+        }
+
+        .switch-auth {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-secondary);
+        }
+
+        .switch-auth a {
+            color: var(--primary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .switch-auth a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
+    <div class="floating-particles" id="particles"></div>
+    
     <div class="app-container">
-        <!-- Header -->
-        <div class="header">
-            <h1><i class="fas fa-paper-plane"></i> FlashMessenger</h1>
+        <!-- Welcome Screen -->
+        <div class="screen welcome-screen" id="welcomeScreen">
+            <div class="welcome-content">
+                <div class="welcome-title">
+                    <i class="fas fa-comments"></i> FlashMessenger
+                </div>
+                <div class="welcome-subtitle">
+                    Общайтесь мгновенно и безопасно
+                </div>
+                <div class="auth-buttons">
+                    <button class="auth-btn" onclick="showAuth('register')">
+                        <i class="fas fa-user-plus"></i> Регистрация
+                    </button>
+                    <button class="auth-btn" onclick="showAuth('login')">
+                        <i class="fas fa-sign-in-alt"></i> Войти
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Register Screen -->
+        <div class="screen auth-screen" id="registerScreen">
+            <button class="back-btn" onclick="showWelcome()">
+                <i class="fas fa-arrow-left"></i> Назад
+            </button>
+            <div class="auth-form">
+                <h2 class="form-title">Создать аккаунт</h2>
+                <div class="input-group">
+                    <input type="text" id="regUsername" placeholder="Придумайте логин" maxlength="20">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="regPassword" placeholder="Создайте пароль">
+                    <button class="password-toggle" onclick="togglePassword('regPassword')">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="regConfirmPassword" placeholder="Повторите пароль">
+                    <button class="password-toggle" onclick="togglePassword('regConfirmPassword')">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <button class="submit-btn" onclick="register()">
+                    <i class="fas fa-rocket"></i> Зарегистрироваться
+                </button>
+                <div class="switch-auth">
+                    Уже есть аккаунт? <a onclick="showAuth('login')">Войти</a>
+                </div>
+            </div>
         </div>
 
         <!-- Login Screen -->
-        <div class="login-screen" id="loginScreen">
-            <h2>Welcome Back! 👋</h2>
-            <div class="input-group">
-                <input type="text" id="usernameInput" placeholder="Enter your username" maxlength="20">
-            </div>
-            <button class="btn" onclick="login()">
-                <i class="fas fa-sign-in-alt"></i> Start Messaging
+        <div class="screen auth-screen" id="loginScreen">
+            <button class="back-btn" onclick="showWelcome()">
+                <i class="fas fa-arrow-left"></i> Назад
             </button>
+            <div class="auth-form">
+                <h2 class="form-title">Вход в аккаунт</h2>
+                <div class="input-group">
+                    <input type="text" id="loginUsername" placeholder="Ваш логин">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="loginPassword" placeholder="Ваш пароль">
+                    <button class="password-toggle" onclick="togglePassword('loginPassword')">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <button class="submit-btn" onclick="login()">
+                    <i class="fas fa-sign-in-alt"></i> Войти
+                </button>
+                <div class="switch-auth">
+                    Нет аккаунта? <a onclick="showAuth('register')">Зарегистрироваться</a>
+                </div>
+            </div>
         </div>
 
         <!-- Main Chat Screen -->
-        <div class="chat-screen" id="chatScreen">
+        <div class="screen chat-screen" id="mainChatScreen">
             <div class="chat-header">
                 <div class="user-info">
                     <div class="avatar" id="userAvatar">U</div>
                     <div>
-                        <div id="userGreeting">Welcome!</div>
-                        <div style="font-size: 12px; opacity: 0.7;">Online</div>
+                        <div id="userGreeting">Добро пожаловать!</div>
+                        <div style="font-size: 12px; opacity: 0.7;">В сети</div>
                     </div>
                 </div>
-                <button class="btn" onclick="logout()" style="width: auto; padding: 8px 15px;">
+                <button class="send-btn" onclick="logout()" style="background: var(--error);">
                     <i class="fas fa-sign-out-alt"></i>
                 </button>
             </div>
 
             <div class="search-box">
-                <input type="text" id="userSearch" placeholder="Search users..." oninput="searchUsers(this.value)">
+                <input type="text" id="userSearch" placeholder="Поиск пользователей..." oninput="searchUsers(this.value)">
             </div>
 
             <div class="users-list" id="usersList">
                 <!-- Users will appear here -->
             </div>
+
+            <div class="floating-action" onclick="createNewUser()" title="Новый пользователь">
+                <i class="fas fa-user-plus"></i>
+            </div>
         </div>
 
         <!-- Individual Chat Screen -->
-        <div class="chat-container" id="chatContainer">
+        <div class="screen chat-container" id="chatContainer">
             <div class="chat-header">
                 <button class="back-btn" onclick="closeChat()">
                     <i class="fas fa-arrow-left"></i>
@@ -338,7 +650,7 @@
                 <div class="user-info">
                     <div class="avatar" id="targetAvatar">U</div>
                     <div>
-                        <div id="targetUsername">User</div>
+                        <div id="targetUsername">Пользователь</div>
                         <div style="font-size: 12px; opacity: 0.7;" id="typingIndicator"></div>
                     </div>
                 </div>
@@ -349,7 +661,7 @@
             </div>
 
             <div class="message-input">
-                <input type="text" id="messageInput" placeholder="Type a message..." 
+                <input type="text" id="messageInput" placeholder="Напишите сообщение..." 
                        onkeypress="if(event.key === 'Enter') sendMessage()">
                 <button class="send-btn" onclick="sendMessage()">
                     <i class="fas fa-paper-plane"></i>
@@ -359,46 +671,69 @@
     </div>
 
     <script>
-        // Enhanced data management
-        class FlashMessenger {
+        // Enhanced data management with password protection
+        class SecureFlashMessenger {
             constructor() {
-                this.users = JSON.parse(localStorage.getItem('flash_users')) || [];
-                this.messages = JSON.parse(localStorage.getItem('flash_messages')) || [];
+                this.users = JSON.parse(localStorage.getItem('secure_flash_users')) || [];
+                this.messages = JSON.parse(localStorage.getItem('secure_flash_messages')) || [];
                 this.currentUser = null;
                 this.targetUser = null;
                 this.typingUsers = new Set();
             }
 
             saveUsers() {
-                localStorage.setItem('flash_users', JSON.stringify(this.users));
+                localStorage.setItem('secure_flash_users', JSON.stringify(this.users));
             }
 
             saveMessages() {
-                localStorage.setItem('flash_messages', JSON.stringify(this.messages));
+                localStorage.setItem('secure_flash_messages', JSON.stringify(this.messages));
             }
 
-            login(username) {
-                let user = this.users.find(u => u.username === username);
-                if (!user) {
-                    user = {
-                        id: Date.now(),
-                        username: username,
-                        avatar: username.charAt(0).toUpperCase(),
-                        joined: new Date().toISOString(),
-                        online: true
-                    };
-                    this.users.push(user);
-                    this.saveUsers();
+            register(username, password) {
+                if (this.users.find(u => u.username === username)) {
+                    throw new Error('Пользователь с таким логином уже существует');
                 }
+
+                if (password.length < 4) {
+                    throw new Error('Пароль должен быть не менее 4 символов');
+                }
+
+                const user = {
+                    id: Date.now(),
+                    username: username,
+                    password: btoa(password), // Simple encoding
+                    avatar: username.charAt(0).toUpperCase(),
+                    joined: new Date().toISOString(),
+                    online: true,
+                    lastSeen: new Date().toISOString()
+                };
+                
+                this.users.push(user);
+                this.saveUsers();
+                return user;
+            }
+
+            login(username, password) {
+                const user = this.users.find(u => u.username === username);
+                if (!user) {
+                    throw new Error('Пользователь не найден');
+                }
+                if (user.password !== btoa(password)) {
+                    throw new Error('Неверный пароль');
+                }
+                
+                user.online = true;
+                user.lastSeen = new Date().toISOString();
+                this.saveUsers();
                 this.currentUser = user;
                 return user;
             }
 
             searchUsers(query) {
-                if (!query) return this.users.filter(u => u.id !== this.currentUser.id);
+                if (!query) return this.users.filter(u => u.id !== this.currentUser?.id);
                 return this.users.filter(u => 
                     u.username.toLowerCase().includes(query.toLowerCase()) && 
-                    u.id !== this.currentUser.id
+                    u.id !== this.currentUser?.id
                 );
             }
 
@@ -431,35 +766,143 @@
                 });
                 this.saveMessages();
             }
+
+            logout() {
+                if (this.currentUser) {
+                    this.currentUser.online = false;
+                    this.currentUser.lastSeen = new Date().toISOString();
+                    this.saveUsers();
+                }
+                this.currentUser = null;
+            }
         }
 
-        const messenger = new FlashMessenger();
+        const messenger = new SecureFlashMessenger();
 
-        // UI Functions
-        function login() {
-            const username = document.getElementById('usernameInput').value.trim();
-            if (!username) {
-                showNotification('Please enter a username');
+        // UI Functions with animations
+        function createParticles() {
+            const particles = document.getElementById('particles');
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = Math.random() * 60 + 20 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                particle.style.opacity = Math.random() * 0.3 + 0.1;
+                particles.appendChild(particle);
+            }
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.style.background = type === 'error' ? 'var(--error)' : 'var(--success)';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        function showWelcome() {
+            document.getElementById('welcomeScreen').style.display = 'flex';
+            document.getElementById('registerScreen').classList.remove('active');
+            document.getElementById('loginScreen').classList.remove('active');
+        }
+
+        function showAuth(type) {
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('registerScreen').classList.remove('active');
+            document.getElementById('loginScreen').classList.remove('active');
+            
+            setTimeout(() => {
+                document.getElementById(type + 'Screen').classList.add('active');
+            }, 50);
+        }
+
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+
+        function register() {
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+            if (!username || !password) {
+                showNotification('Заполните все поля', 'error');
                 return;
             }
 
-            messenger.login(username);
-            showChatScreen();
+            if (password !== confirmPassword) {
+                showNotification('Пароли не совпадают', 'error');
+                return;
+            }
+
+            try {
+                const user = messenger.register(username, password);
+                showNotification('Аккаунт успешно создан!');
+                
+                // Auto login after registration
+                setTimeout(() => {
+                    messenger.currentUser = user;
+                    showMainChat();
+                }, 1000);
+                
+            } catch (error) {
+                showNotification(error.message, 'error');
+            }
+        }
+
+        function login() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!username || !password) {
+                showNotification('Заполните все поля', 'error');
+                return;
+            }
+
+            try {
+                messenger.login(username, password);
+                showNotification('Успешный вход!');
+                setTimeout(showMainChat, 1000);
+            } catch (error) {
+                showNotification(error.message, 'error');
+            }
+        }
+
+        function showMainChat() {
+            document.getElementById('loginScreen').classList.remove('active');
+            document.getElementById('registerScreen').classList.remove('active');
+            document.getElementById('mainChatScreen').style.display = 'flex';
+            document.getElementById('userAvatar').textContent = messenger.currentUser.avatar;
+            document.getElementById('userGreeting').textContent = `Привет, ${messenger.currentUser.username}!`;
+            loadUsersList();
         }
 
         function logout() {
-            messenger.currentUser = null;
-            document.getElementById('loginScreen').style.display = 'block';
-            document.getElementById('chatScreen').style.display = 'none';
-            document.getElementById('usernameInput').value = '';
+            messenger.logout();
+            document.getElementById('mainChatScreen').style.display = 'none';
+            document.getElementById('chatContainer').style.display = 'none';
+            showWelcome();
+            showNotification('Вы вышли из системы');
         }
 
-        function showChatScreen() {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('chatScreen').style.display = 'flex';
-            document.getElementById('userAvatar').textContent = messenger.currentUser.avatar;
-            document.getElementById('userGreeting').textContent = `Hello, ${messenger.currentUser.username}!`;
-            loadUsersList();
+        function createNewUser() {
+            showAuth('register');
         }
 
         function searchUsers(query) {
@@ -481,7 +924,9 @@
                     </div>
                     <div>
                         <div style="font-weight: 500;">${user.username}</div>
-                        <div style="font-size: 12px; color: #666;">Tap to message</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">
+                            ${user.online ? 'В сети' : 'Был(а) ' + formatLastSeen(user.lastSeen)}
+                        </div>
                     </div>
                 </div>
             `).join('');
@@ -489,7 +934,7 @@
 
         function openChat(userId, username) {
             messenger.targetUser = { id: userId, username };
-            document.getElementById('chatScreen').style.display = 'none';
+            document.getElementById('mainChatScreen').style.display = 'none';
             document.getElementById('chatContainer').style.display = 'flex';
             document.getElementById('targetUsername').textContent = username;
             document.getElementById('targetAvatar').textContent = username.charAt(0).toUpperCase();
@@ -501,7 +946,7 @@
 
         function closeChat() {
             document.getElementById('chatContainer').style.display = 'none';
-            document.getElementById('chatScreen').style.display = 'flex';
+            document.getElementById('mainChatScreen').style.display = 'flex';
             messenger.targetUser = null;
             loadUsersList();
         }
@@ -530,22 +975,33 @@
             addMessageToChat(message, true);
             input.value = '';
 
-            // Simulate reply (in real app, this would be WebSocket)
+            // Simulate typing and reply
+            showTypingIndicator();
             setTimeout(() => {
-                if (Math.random() > 0.7) { // 30% chance of auto-reply
-                    const replies = ['Hello!', 'Nice to hear from you!', 'I got your message', 'Thanks!', 'How are you?'];
+                hideTypingIndicator();
+                if (Math.random() > 0.3) {
+                    const replies = ['Привет!', 'Как дела?', 'Интересно...', 'Спасибо!', 'Отлично!', 'Что нового?', 'Здорово!'];
                     const replyText = replies[Math.floor(Math.random() * replies.length)];
                     const replyMessage = messenger.sendMessage(messenger.currentUser.id, replyText);
                     addMessageToChat(replyMessage, false);
                 }
-            }, 1000 + Math.random() * 2000);
+            }, 1500 + Math.random() * 2000);
+        }
+
+        function showTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            indicator.textContent = 'печатает...';
+        }
+
+        function hideTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            indicator.textContent = '';
         }
 
         function addMessageToChat(message, isSent) {
             const chatMessages = document.getElementById('chatMessages');
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
-            messageDiv.style.animation = 'messageSlide 0.3s ease-out';
             messageDiv.innerHTML = `
                 ${message.text}
                 <div class="message-time">${formatTime(message.timestamp)}</div>
@@ -555,10 +1011,24 @@
         }
 
         function formatTime(timestamp) {
-            return new Date(timestamp).toLocaleTimeString('en-US', { 
+            return new Date(timestamp).toLocaleTimeString('ru-RU', { 
                 hour: '2-digit', 
                 minute: '2-digit' 
             });
+        }
+
+        function formatLastSeen(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+
+            if (minutes < 1) return 'только что';
+            if (minutes < 60) return `${minutes} мин назад`;
+            if (hours < 24) return `${hours} ч назад`;
+            return `${days} дн назад`;
         }
 
         function getColorHash(str) {
@@ -570,22 +1040,26 @@
             return '00000'.substring(0, 6 - color.length) + color;
         }
 
-        function showNotification(message) {
-            // Simple notification implementation
-            alert(message);
-        }
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+            
+            // Enter key support
+            document.getElementById('regPassword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') register();
+            });
+            
+            document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') login();
+            });
 
-        // Enter key support
-        document.getElementById('usernameInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') login();
+            // Auto-load users every 3 seconds
+            setInterval(() => {
+                if (messenger.currentUser && !messenger.targetUser) {
+                    loadUsersList();
+                }
+            }, 3000);
         });
-
-        // Auto-load users every 5 seconds to simulate real-time updates
-        setInterval(() => {
-            if (messenger.currentUser && !messenger.targetUser) {
-                loadUsersList();
-            }
-        }, 5000);
     </script>
 </body>
 </html>
