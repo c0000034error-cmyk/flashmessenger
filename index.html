@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlashMessenger - Межплатформенный мессенджер</title>
+    <title>FlashMessenger 💫</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -13,29 +13,70 @@
         }
 
         :root {
-            --primary: #8774e1;
-            --primary-dark: #6b5bbd;
-            --background: #0f0f0f;
-            --surface: #1a1a1a;
-            --surface-light: #2d2d2d;
-            --text: #ffffff;
-            --text-secondary: #a0a0a0;
-            --success: #4caf50;
-            --error: #f44336;
-            --warning: #ff9800;
-            --online: #4caf50;
-            --offline: #666;
+            --primary: #8A2BE2;
+            --primary-dark: #7B1FA2;
+            --primary-light: #9C27B0;
+            --background: #0A0A0A;
+            --surface: #1A1A1A;
+            --surface-light: #2D2D2D;
+            --surface-dark: #121212;
+            --text: #FFFFFF;
+            --text-secondary: #B0B0B0;
+            --text-muted: #888888;
+            --success: #4CAF50;
+            --error: #F44336;
+            --warning: #FF9800;
+            --online: #00E676;
+            --offline: #757575;
+            --gradient: linear-gradient(135deg, var(--primary), var(--primary-light));
+            --shadow: 0 8px 32px rgba(0,0,0,0.3);
+            --glow: 0 0 20px rgba(138, 43, 226, 0.3);
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--background);
+            color: var(--text);
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: var(--text);
             overflow: hidden;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes messageAppear {
+            from { opacity: 0; transform: translateY(10px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .app-container {
@@ -43,15 +84,14 @@
             max-width: 400px;
             height: 90vh;
             background: var(--surface);
-            border-radius: 20px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
             position: relative;
+            animation: scaleIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--surface-light);
         }
 
-        /* Частицы фона */
         .particles {
             position: absolute;
             top: 0;
@@ -59,21 +99,17 @@
             width: 100%;
             height: 100%;
             pointer-events: none;
+            z-index: 0;
         }
 
         .particle {
             position: absolute;
-            background: rgba(135, 116, 225, 0.1);
+            background: var(--primary);
             border-radius: 50%;
             animation: float 6s infinite ease-in-out;
+            opacity: 0.1;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
-        }
-
-        /* Экраны */
         .screen {
             display: none;
             flex-direction: column;
@@ -84,49 +120,110 @@
 
         .screen.active {
             display: flex;
+            animation: fadeIn 0.5s ease-out;
         }
 
-        /* Welcome Screen */
         .welcome-screen {
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 30px;
+            padding: 40px 30px;
+            background: var(--surface-dark);
         }
 
-        .app-logo {
-            font-size: 48px;
+        .logo {
+            font-size: 64px;
             margin-bottom: 20px;
-            background: linear-gradient(135deg, var(--primary), #ff6b6b);
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .app-title {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 10px;
+        .subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            font-size: 16px;
+            line-height: 1.5;
         }
 
-        .app-subtitle {
-            color: var(--text-secondary);
-            margin-bottom: 30px;
-            line-height: 1.5;
+        .auth-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .auth-btn {
+            padding: 18px 24px;
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            background: transparent;
+            color: var(--primary);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .auth-btn:hover::before {
+            left: 0;
+        }
+
+        .auth-btn:hover {
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--glow);
         }
 
         .features {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 30px;
+            gap: 12px;
+            margin-top: 40px;
             width: 100%;
+            max-width: 280px;
         }
 
         .feature {
             background: var(--surface-light);
-            padding: 15px;
-            border-radius: 10px;
+            padding: 16px;
+            border-radius: 12px;
             text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-2px);
+            background: var(--primary);
         }
 
         .feature i {
@@ -135,59 +232,56 @@
             color: var(--primary);
         }
 
+        .feature:hover i {
+            color: white;
+        }
+
         .feature-text {
             font-size: 12px;
             color: var(--text-secondary);
         }
 
-        .auth-buttons {
-            display: flex;
-            gap: 15px;
-            width: 100%;
-        }
-
-        .auth-btn {
-            flex: 1;
-            padding: 15px;
-            border: 2px solid var(--primary);
-            border-radius: 15px;
-            background: transparent;
-            color: var(--primary);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .auth-btn:hover {
-            background: var(--primary);
+        .feature:hover .feature-text {
             color: white;
-            transform: translateY(-2px);
         }
 
-        /* Auth Screens */
         .auth-screen {
             padding: 30px;
             justify-content: center;
+            background: var(--surface-dark);
         }
 
         .back-btn {
             background: none;
             border: none;
             color: var(--text-secondary);
-            font-size: 16px;
+            font-size: 18px;
             cursor: pointer;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             align-self: flex-start;
+            padding: 8px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: var(--surface-light);
+            color: var(--text);
         }
 
         .auth-form {
             width: 100%;
+            animation: slideInRight 0.6s ease-out;
         }
 
         .form-title {
-            font-size: 24px;
+            font-size: 28px;
+            font-weight: 700;
             margin-bottom: 30px;
             text-align: center;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .input-group {
@@ -197,10 +291,10 @@
 
         .input-group input {
             width: 100%;
-            padding: 15px 20px;
+            padding: 18px 20px;
             background: var(--surface-light);
             border: 2px solid transparent;
-            border-radius: 15px;
+            border-radius: 16px;
             color: var(--text);
             font-size: 16px;
             transition: all 0.3s ease;
@@ -210,40 +304,72 @@
         .input-group input:focus {
             border-color: var(--primary);
             background: var(--surface);
+            box-shadow: var(--glow);
+            transform: translateY(-2px);
+        }
+
+        .input-group input::placeholder {
+            color: var(--text-muted);
         }
 
         .password-toggle {
             position: absolute;
-            right: 15px;
+            right: 16px;
             top: 50%;
             transform: translateY(-50%);
             background: none;
             border: none;
-            color: var(--text-secondary);
+            color: var(--text-muted);
             cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary);
+            background: var(--surface);
         }
 
         .submit-btn {
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 18px;
+            background: var(--gradient);
             color: white;
             border: none;
-            border-radius: 15px;
+            border-radius: 16px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
         }
 
         .submit-btn:hover {
             transform: translateY(-2px);
+            box-shadow: var(--glow);
         }
 
         .switch-auth {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 25px;
             color: var(--text-secondary);
         }
 
@@ -251,47 +377,55 @@
             color: var(--primary);
             cursor: pointer;
             text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
         }
 
-        /* Main App */
+        .switch-auth a:hover {
+            color: var(--primary-light);
+        }
+
         .app-header {
             padding: 20px;
-            background: var(--surface-light);
-            border-bottom: 1px solid var(--surface);
+            background: var(--surface-dark);
+            border-bottom: 1px solid var(--surface-light);
+            position: relative;
         }
 
         .user-info {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
         }
 
         .avatar {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 20px;
             position: relative;
+            animation: pulse 2s infinite;
         }
 
         .status-indicator {
             position: absolute;
             bottom: 2px;
             right: 2px;
-            width: 12px;
-            height: 12px;
-            border: 2px solid var(--surface);
+            width: 14px;
+            height: 14px;
+            border: 2px solid var(--surface-dark);
             border-radius: 50%;
         }
 
         .status-online {
             background: var(--online);
+            box-shadow: 0 0 10px var(--online);
         }
 
         .status-offline {
@@ -303,38 +437,51 @@
         }
 
         .user-name {
-            font-weight: 600;
-            margin-bottom: 2px;
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 4px;
         }
 
         .user-status {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--text-secondary);
         }
 
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
         .action-btn {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border: none;
-            border-radius: 50%;
-            background: var(--surface);
+            border-radius: 12px;
+            background: var(--surface-light);
             color: var(--text);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
         }
 
-        /* Navigation */
+        .action-btn:hover {
+            background: var(--primary);
+            transform: scale(1.1);
+            box-shadow: var(--glow);
+        }
+
         .nav-tabs {
             display: flex;
-            background: var(--surface-light);
-            border-bottom: 1px solid var(--surface);
+            background: var(--surface-dark);
+            border-bottom: 1px solid var(--surface-light);
+            padding: 0 10px;
         }
 
         .nav-tab {
             flex: 1;
-            padding: 15px 10px;
+            padding: 16px 10px;
             text-align: center;
             background: none;
             border: none;
@@ -342,6 +489,9 @@
             cursor: pointer;
             transition: all 0.3s ease;
             font-size: 12px;
+            border-radius: 12px 12px 0 0;
+            margin: 0 5px;
+            position: relative;
         }
 
         .nav-tab.active {
@@ -352,14 +502,27 @@
         .nav-tab i {
             display: block;
             font-size: 20px;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
         }
 
-        /* Content */
+        .nav-tab .badge {
+            position: absolute;
+            top: 12px;
+            right: 8px;
+            background: var(--error);
+            color: white;
+            border-radius: 10px;
+            padding: 2px 6px;
+            font-size: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+
         .content-area {
             flex: 1;
             overflow-y: auto;
             background: var(--background);
+            position: relative;
         }
 
         .tab-content {
@@ -370,31 +533,86 @@
 
         .tab-content.active {
             display: flex;
+            animation: fadeIn 0.4s ease-out;
         }
 
-        /* Chat List */
-        .chat-list {
-            flex: 1;
+        .search-box {
+            padding: 20px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--surface-light);
         }
 
-        .chat-item {
+        .search-input {
+            width: 100%;
+            padding: 16px 20px;
+            background: var(--surface-light);
+            border: none;
+            border-radius: 16px;
+            color: var(--text);
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            box-shadow: var(--glow);
+            background: var(--surface-dark);
+        }
+
+        .friends-section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-count {
+            background: var(--primary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .friends-list {
+            padding: 0 15px;
+        }
+
+        .friend-item {
             display: flex;
             align-items: center;
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--surface-light);
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .chat-item:hover {
+            padding: 16px;
             background: var(--surface-light);
+            border-radius: 16px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: slideInLeft 0.5s ease-out;
         }
 
-        .chat-avatar {
-            width: 50px;
-            height: 50px;
+        .friend-item:hover {
+            background: var(--primary);
+            transform: translateX(8px);
+        }
+
+        .friend-item:hover .friend-name,
+        .friend-item:hover .friend-status {
+            color: white;
+        }
+
+        .friend-avatar {
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            background: var(--gradient);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -404,57 +622,138 @@
             position: relative;
         }
 
-        .chat-info {
+        .friend-info {
             flex: 1;
         }
 
-        .chat-name {
+        .friend-name {
             font-weight: 600;
             margin-bottom: 4px;
+            color: var(--text);
         }
 
-        .chat-last-message {
+        .friend-status {
             font-size: 13px;
             color: var(--text-secondary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
-        .chat-meta {
-            text-align: right;
+        .friend-actions {
+            display: flex;
+            gap: 8px;
         }
 
-        .chat-time {
-            font-size: 11px;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-        }
-
-        .unread-badge {
-            background: var(--primary);
-            color: white;
+        .friend-action-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
             border-radius: 10px;
-            padding: 2px 8px;
-            font-size: 10px;
-        }
-
-        /* Chat Screen */
-        .chat-header {
-            padding: 15px 20px;
-            background: var(--surface-light);
-            border-bottom: 1px solid var(--surface);
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 12px;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .friend-action-btn:hover {
+            background: white;
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .request-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: var(--surface-light);
+            border-radius: 16px;
+            margin-bottom: 10px;
+            animation: slideInRight 0.5s ease-out;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        .accept-btn {
+            background: var(--success);
+            color: white;
+        }
+
+        .accept-btn:hover {
+            background: #43A047;
+        }
+
+        .decline-btn {
+            background: var(--error);
+            color: white;
+        }
+
+        .decline-btn:hover {
+            background: #E53935;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: var(--surface-light);
+            border-radius: 16px;
+            margin-bottom: 10px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .add-friend-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .add-friend-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+            box-shadow: var(--glow);
+        }
+
+        .add-friend-btn.added {
+            background: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .chat-header {
+            padding: 16px 20px;
+            background: var(--surface-dark);
+            border-bottom: 1px solid var(--surface-light);
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .back-button {
             background: none;
             border: none;
             color: var(--text);
-            font-size: 18px;
+            font-size: 20px;
             cursor: pointer;
+            padding: 8px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: var(--surface-light);
         }
 
         .chat-messages {
@@ -463,69 +762,71 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
+            gap: 12px;
         }
 
         .message {
-            max-width: 70%;
-            padding: 12px 16px;
-            margin-bottom: 15px;
+            max-width: 75%;
+            padding: 14px 18px;
             border-radius: 18px;
             position: relative;
-            animation: messageSlide 0.3s ease-out;
-        }
-
-        @keyframes messageSlide {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            animation: messageAppear 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            line-height: 1.4;
         }
 
         .message.sent {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            background: var(--gradient);
             color: white;
             align-self: flex-end;
-            border-bottom-right-radius: 5px;
+            border-bottom-right-radius: 6px;
         }
 
         .message.received {
             background: var(--surface-light);
             color: var(--text);
             align-self: flex-start;
-            border-bottom-left-radius: 5px;
+            border-bottom-left-radius: 6px;
         }
 
         .message-time {
             font-size: 11px;
-            opacity: 0.7;
-            margin-top: 5px;
+            opacity: 0.8;
+            margin-top: 6px;
             text-align: right;
         }
 
         .message-input-container {
-            padding: 15px 20px;
-            background: var(--surface-light);
-            border-top: 1px solid var(--surface);
+            padding: 20px;
+            background: var(--surface-dark);
+            border-top: 1px solid var(--surface-light);
             display: flex;
-            gap: 10px;
+            gap: 12px;
             align-items: center;
         }
 
         .message-input {
             flex: 1;
-            padding: 12px 20px;
-            background: var(--surface);
+            padding: 16px 20px;
+            background: var(--surface-light);
             border: none;
-            border-radius: 25px;
+            border-radius: 20px;
             color: var(--text);
             outline: none;
-            font-size: 14px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .message-input:focus {
+            background: var(--surface);
+            box-shadow: var(--glow);
         }
 
         .send-button {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            background: var(--gradient);
             color: white;
             border: none;
-            width: 45px;
-            height: 45px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
@@ -534,60 +835,19 @@
             transition: all 0.3s ease;
         }
 
-        .send-button:hover {
+        .send-button:hover:not(:disabled) {
             transform: scale(1.1);
+            box-shadow: var(--glow);
         }
 
-        /* Settings */
-        .settings-list {
-            padding: 20px;
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
-        .settings-item {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            background: var(--surface-light);
-            border-radius: 10px;
-            margin-bottom: 10px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .settings-item:hover {
-            background: var(--primary);
-        }
-
-        .settings-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--surface);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            color: var(--primary);
-        }
-
-        .settings-info {
-            flex: 1;
-        }
-
-        .settings-title {
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
-
-        .settings-desc {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        /* Empty States */
         .empty-state {
             text-align: center;
-            padding: 60px 20px;
+            padding: 60px 30px;
             color: var(--text-secondary);
         }
 
@@ -598,32 +858,64 @@
         }
 
         .empty-state h3 {
-            margin-bottom: 10px;
-            font-size: 18px;
+            margin-bottom: 12px;
+            font-size: 20px;
+            color: var(--text);
         }
 
         .empty-state p {
             font-size: 14px;
             line-height: 1.5;
+            color: var(--text-secondary);
         }
 
-        /* Notifications */
         .notification {
             position: fixed;
             top: 20px;
             right: 20px;
-            padding: 15px 25px;
+            padding: 16px 24px;
             background: var(--success);
             color: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
             z-index: 1000;
             animation: slideInRight 0.5s ease-out;
+            font-weight: 600;
         }
 
-        @keyframes slideInRight {
-            from { transform: translateX(100px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        .notification.error {
+            background: var(--error);
+        }
+
+        @media (max-height: 700px) {
+            .app-container {
+                height: 95vh;
+            }
+            
+            .welcome-screen {
+                padding: 20px;
+            }
+            
+            .logo {
+                font-size: 48px;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--surface-light);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
         }
     </style>
 </head>
@@ -633,27 +925,27 @@
     <div class="app-container">
         <!-- Welcome Screen -->
         <div class="screen welcome-screen active" id="welcomeScreen">
-            <div class="app-logo">
-                <i class="fas fa-comments"></i>
+            <div class="logo">
+                <i class="fas fa-comment-dots"></i>
             </div>
-            <div class="app-title">FlashMessenger</div>
-            <div class="app-subtitle">
-                Межплатформенный мессенджер<br>
-                Общайтесь на любых устройствах
+            <div class="title">FlashMessenger</div>
+            <div class="subtitle">
+                Современный мессенджер<br>
+                Общайтесь с друзьями
             </div>
             
             <div class="features">
                 <div class="feature">
-                    <i class="fas fa-mobile-alt"></i>
-                    <div class="feature-text">Любые устройства</div>
+                    <i class="fas fa-user-plus"></i>
+                    <div class="feature-text">Регистрация</div>
                 </div>
                 <div class="feature">
-                    <i class="fas fa-globe"></i>
-                    <div class="feature-text">Везде в мире</div>
+                    <i class="fas fa-search"></i>
+                    <div class="feature-text">Поиск</div>
                 </div>
                 <div class="feature">
-                    <i class="fas fa-bolt"></i>
-                    <div class="feature-text">Мгновенно</div>
+                    <i class="fas fa-comments"></i>
+                    <div class="feature-text">Чаты</div>
                 </div>
                 <div class="feature">
                     <i class="fas fa-shield-alt"></i>
@@ -672,7 +964,7 @@
 
             <div style="margin-top: 20px; color: var(--text-secondary); font-size: 12px; text-align: center;">
                 🔒 Ваши данные защищены<br>
-                📱 Работает на всех устройствах
+                💫 Красивый и удобный дизайн
             </div>
         </div>
 
@@ -743,11 +1035,13 @@
                     </div>
                     <div class="user-details">
                         <div class="user-name" id="userName">Пользователь</div>
-                        <div class="user-status" id="userStatus">В сети</div>
+                        <div class="user-status">В сети</div>
                     </div>
-                    <button class="action-btn" onclick="showAppTab('settings')">
-                        <i class="fas fa-cog"></i>
-                    </button>
+                    <div class="header-actions">
+                        <button class="action-btn" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -757,13 +1051,14 @@
                     <i class="fas fa-comments"></i>
                     <div>Чаты</div>
                 </button>
-                <button class="nav-tab" onclick="showAppTab('contacts')">
-                    <i class="fas fa-users"></i>
-                    <div>Контакты</div>
+                <button class="nav-tab" onclick="showAppTab('friends')">
+                    <i class="fas fa-user-friends"></i>
+                    <div>Друзья</div>
+                    <span class="badge" id="friendsBadge" style="display: none;">0</span>
                 </button>
-                <button class="nav-tab" onclick="showAppTab('settings')">
-                    <i class="fas fa-cog"></i>
-                    <div>Настройки</div>
+                <button class="nav-tab" onclick="showAppTab('discover')">
+                    <i class="fas fa-search"></i>
+                    <div>Поиск</div>
                 </button>
             </div>
 
@@ -771,59 +1066,55 @@
             <div class="content-area">
                 <!-- Chats Tab -->
                 <div class="tab-content active" id="chatsTab">
-                    <div class="chat-list" id="chatList">
-                        <!-- Chats will be loaded here -->
+                    <div class="search-box">
+                        <input type="text" class="search-input" id="chatsSearch" placeholder="Поиск в чатах..." oninput="searchChats(this.value)">
+                    </div>
+                    <div class="friends-list" id="chatsList">
+                        <!-- Чаты будут здесь -->
                     </div>
                 </div>
 
-                <!-- Contacts Tab -->
-                <div class="tab-content" id="contactsTab">
-                    <div class="empty-state">
-                        <i class="fas fa-users"></i>
-                        <h3>Контакты</h3>
-                        <p>Список ваших контактов появится здесь</p>
+                <!-- Friends Tab -->
+                <div class="tab-content" id="friendsTab">
+                    <div class="search-box">
+                        <input type="text" class="search-input" id="friendsSearch" placeholder="Поиск друзей..." oninput="searchFriends(this.value)">
+                    </div>
+                    <div class="friends-section">
+                        <div class="section-title">
+                            Заявки в друзья
+                            <span class="section-count" id="requestsCount">0</span>
+                        </div>
+                        <div class="friends-list" id="friendRequestsList">
+                            <!-- Заявки будут здесь -->
+                        </div>
+                    </div>
+                    <div class="friends-section">
+                        <div class="section-title">
+                            Друзья онлайн
+                            <span class="section-count" id="onlineCount">0</span>
+                        </div>
+                        <div class="friends-list" id="onlineFriendsList">
+                            <!-- Друзья онлайн -->
+                        </div>
+                    </div>
+                    <div class="friends-section">
+                        <div class="section-title">
+                            Все друзья
+                            <span class="section-count" id="allFriendsCount">0</span>
+                        </div>
+                        <div class="friends-list" id="allFriendsList">
+                            <!-- Все друзья -->
+                        </div>
                     </div>
                 </div>
 
-                <!-- Settings Tab -->
-                <div class="tab-content" id="settingsTab">
-                    <div class="settings-list">
-                        <div class="settings-item" onclick="showNotification('Функция в разработке')">
-                            <div class="settings-icon">
-                                <i class="fas fa-user-edit"></i>
-                            </div>
-                            <div class="settings-info">
-                                <div class="settings-title">Редактировать профиль</div>
-                                <div class="settings-desc">Изменить имя, аватар, статус</div>
-                            </div>
-                        </div>
-                        <div class="settings-item" onclick="showNotification('Функция в разработке')">
-                            <div class="settings-icon">
-                                <i class="fas fa-bell"></i>
-                            </div>
-                            <div class="settings-info">
-                                <div class="settings-title">Уведомления</div>
-                                <div class="settings-desc">Настройка оповещений</div>
-                            </div>
-                        </div>
-                        <div class="settings-item" onclick="showNotification('Функция в разработке')">
-                            <div class="settings-icon">
-                                <i class="fas fa-moon"></i>
-                            </div>
-                            <div class="settings-info">
-                                <div class="settings-title">Темная тема</div>
-                                <div class="settings-desc">Используется темная тема</div>
-                            </div>
-                        </div>
-                        <div class="settings-item" onclick="logout()">
-                            <div class="settings-icon">
-                                <i class="fas fa-sign-out-alt"></i>
-                            </div>
-                            <div class="settings-info">
-                                <div class="settings-title">Выйти</div>
-                                <div class="settings-desc">Завершить текущую сессию</div>
-                            </div>
-                        </div>
+                <!-- Discover Tab -->
+                <div class="tab-content" id="discoverTab">
+                    <div class="search-box">
+                        <input type="text" class="search-input" id="discoverSearch" placeholder="Поиск пользователей..." oninput="searchDiscover(this.value)">
+                    </div>
+                    <div class="friends-list" id="discoverUsersList">
+                        <!-- Пользователи для добавления -->
                     </div>
                 </div>
 
@@ -835,22 +1126,22 @@
                         </button>
                         <div class="avatar" id="currentChatAvatar">
                             U
-                            <div class="status-indicator status-online"></div>
+                            <div class="status-indicator status-offline"></div>
                         </div>
                         <div class="user-details">
                             <div class="user-name" id="currentChatName">Чат</div>
-                            <div class="user-status" id="currentChatStatus">В сети</div>
+                            <div class="user-status" id="currentChatStatus">Выберите чат</div>
                         </div>
                     </div>
                     <div class="chat-messages" id="chatMessages">
                         <div class="empty-state">
                             <i class="fas fa-comments"></i>
                             <h3>Начните общение</h3>
-                            <p>Отправьте первое сообщение в этом чате</p>
+                            <p>Выберите чат из списка чтобы начать переписку</p>
                         </div>
                     </div>
                     <div class="message-input-container">
-                        <input type="text" class="message-input" id="messageInput" placeholder="Введите сообщение..." disabled>
+                        <input type="text" class="message-input" id="messageInput" placeholder="Выберите чат для общения..." disabled>
                         <button class="send-button" id="sendButton" onclick="sendMessage()" disabled>
                             <i class="fas fa-paper-plane"></i>
                         </button>
@@ -861,29 +1152,17 @@
     </div>
 
     <script>
-        // ==================== CLOUD DATABASE SIMULATION ====================
-        class CloudDatabase {
+        // ==================== УПРОЩЕННАЯ СИСТЕМА ====================
+        class SimpleMessenger {
             constructor() {
-                this.users = JSON.parse(localStorage.getItem('cloud_users')) || this.createDefaultUsers();
-                this.messages = JSON.parse(localStorage.getItem('cloud_messages')) || [];
-                this.sessions = JSON.parse(localStorage.getItem('cloud_sessions')) || [];
+                this.users = JSON.parse(localStorage.getItem('simple_users')) || [];
+                this.messages = JSON.parse(localStorage.getItem('simple_messages')) || [];
+                this.friendships = JSON.parse(localStorage.getItem('simple_friends')) || [];
                 this.currentUser = null;
                 this.currentChat = null;
             }
 
-            createDefaultUsers() {
-                const defaultUsers = [
-                    { id: 1, username: 'Анна', password: btoa('1234'), avatar: 'А', online: true, lastSeen: new Date().toISOString() },
-                    { id: 2, username: 'Максим', password: btoa('1234'), avatar: 'М', online: false, lastSeen: new Date().toISOString() },
-                    { id: 3, username: 'София', password: btoa('1234'), avatar: 'С', online: true, lastSeen: new Date().toISOString() },
-                    { id: 4, username: 'Артем', password: btoa('1234'), avatar: 'А', online: false, lastSeen: new Date().toISOString() },
-                    { id: 5, username: 'Виктория', password: btoa('1234'), avatar: 'В', online: true, lastSeen: new Date().toISOString() }
-                ];
-                localStorage.setItem('cloud_users', JSON.stringify(defaultUsers));
-                return defaultUsers;
-            }
-
-            // Регистрация нового пользователя
+            // Регистрация
             register(username, password) {
                 if (this.users.find(u => u.username === username)) {
                     throw new Error('Пользователь с таким логином уже существует');
@@ -895,16 +1174,15 @@
                     password: btoa(password),
                     avatar: username.charAt(0).toUpperCase(),
                     online: true,
-                    lastSeen: new Date().toISOString(),
-                    device: this.getDeviceInfo()
+                    lastSeen: new Date().toISOString()
                 };
 
                 this.users.push(newUser);
-                this.saveToCloud();
+                this.saveAll();
                 return newUser;
             }
 
-            // Авторизация
+            // Вход
             login(username, password) {
                 const user = this.users.find(u => u.username === username);
                 if (!user) throw new Error('Пользователь не найден');
@@ -912,32 +1190,100 @@
 
                 user.online = true;
                 user.lastSeen = new Date().toISOString();
-                user.device = this.getDeviceInfo();
-                
                 this.currentUser = user;
-                this.saveToCloud();
+                this.saveAll();
                 return user;
             }
 
-            // Получение информации об устройстве
-            getDeviceInfo() {
-                return {
-                    platform: navigator.platform,
-                    userAgent: navigator.userAgent,
-                    language: navigator.language,
-                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                    lastLogin: new Date().toISOString()
+            // Сохранение
+            saveAll() {
+                localStorage.setItem('simple_users', JSON.stringify(this.users));
+                localStorage.setItem('simple_messages', JSON.stringify(this.messages));
+                localStorage.setItem('simple_friends', JSON.stringify(this.friendships));
+            }
+
+            // Отправка заявки в друзья
+            sendFriendRequest(toUserId) {
+                const existing = this.friendships.find(f => 
+                    (f.userId === this.currentUser.id && f.friendId === toUserId) ||
+                    (f.userId === toUserId && f.friendId === this.currentUser.id)
+                );
+
+                if (existing) return existing;
+
+                const friendship = {
+                    userId: this.currentUser.id,
+                    friendId: toUserId,
+                    status: 'pending',
+                    timestamp: new Date().toISOString()
                 };
+
+                this.friendships.push(friendship);
+                this.saveAll();
+                return friendship;
             }
 
-            // Сохранение в "облако" (localStorage)
-            saveToCloud() {
-                localStorage.setItem('cloud_users', JSON.stringify(this.users));
-                localStorage.setItem('cloud_messages', JSON.stringify(this.messages));
-                localStorage.setItem('cloud_sessions', JSON.stringify(this.sessions));
+            // Принятие заявки
+            acceptFriendRequest(fromUserId) {
+                const request = this.friendships.find(f => 
+                    f.userId === fromUserId && f.friendId === this.currentUser.id && f.status === 'pending'
+                );
+
+                if (request) {
+                    request.status = 'accepted';
+                    this.saveAll();
+                }
+                return request;
             }
 
-            // Получение списка чатов
+            // Отклонение заявки
+            declineFriendRequest(fromUserId) {
+                this.friendships = this.friendships.filter(f => 
+                    !(f.userId === fromUserId && f.friendId === this.currentUser.id && f.status === 'pending')
+                );
+                this.saveAll();
+            }
+
+            // Получение заявок в друзья
+            getFriendRequests() {
+                return this.friendships.filter(f => 
+                    f.friendId === this.currentUser.id && f.status === 'pending'
+                ).map(f => this.users.find(u => u.id === f.userId)).filter(Boolean);
+            }
+
+            // Получение списка друзей
+            getFriends() {
+                const friendships = this.friendships.filter(f => 
+                    (f.userId === this.currentUser.id || f.friendId === this.currentUser.id) && 
+                    f.status === 'accepted'
+                );
+
+                return friendships.map(f => {
+                    const friendId = f.userId === this.currentUser.id ? f.friendId : f.userId;
+                    return this.users.find(u => u.id === friendId);
+                }).filter(Boolean);
+            }
+
+            // Получение онлайн друзей
+            getOnlineFriends() {
+                return this.getFriends().filter(f => f.online);
+            }
+
+            // Поиск пользователей для добавления
+            getDiscoverUsers() {
+                const friends = this.getFriends();
+                const pending = this.friendships.filter(f => 
+                    f.userId === this.currentUser.id && f.status === 'pending'
+                ).map(f => f.friendId);
+
+                return this.users.filter(u => 
+                    u.id !== this.currentUser.id &&
+                    !friends.find(f => f.id === u.id) &&
+                    !pending.includes(u.id)
+                );
+            }
+
+            // Получение чатов
             getChats() {
                 const userMessages = this.messages.filter(msg => 
                     msg.from === this.currentUser.id || msg.to === this.currentUser.id
@@ -965,7 +1311,7 @@
                 });
             }
 
-            // Получение последнего сообщения в чате
+            // Получение последнего сообщения
             getLastMessage(partnerId) {
                 const messages = this.messages.filter(msg => 
                     (msg.from === this.currentUser.id && msg.to === partnerId) ||
@@ -975,7 +1321,7 @@
                 return messages[0];
             }
 
-            // Получение количества непрочитанных сообщений
+            // Получение количества непрочитанных
             getUnreadCount(partnerId) {
                 return this.messages.filter(msg => 
                     msg.from === partnerId && 
@@ -1000,89 +1346,50 @@
                     to: toUserId,
                     text: text.trim(),
                     timestamp: new Date().toISOString(),
-                    read: false,
-                    device: this.getDeviceInfo()
+                    read: false
                 };
 
                 this.messages.push(message);
-                this.saveToCloud();
+                this.saveAll();
 
-                // Симуляция получения сообщения на другом устройстве
-                this.simulateCrossDeviceMessage(message);
-                
-                return message;
-            }
-
-            // Симуляция межплатформенного общения
-            simulateCrossDeviceMessage(message) {
+                // Авто-ответ
                 setTimeout(() => {
-                    const partner = this.users.find(u => u.id === message.to);
-                    if (partner && Math.random() > 0.3) { // 70% chance of reply
+                    const partner = this.users.find(u => u.id === toUserId);
+                    if (partner && Math.random() > 0.3) {
                         const replies = [
                             "Привет! Как дела?",
                             "Получил твое сообщение!",
                             "Интересно, расскажи подробнее",
                             "Спасибо за сообщение!",
                             "Отлично! А у тебя как?",
-                            "Я на другом устройстве, но вижу твои сообщения!",
                             "Рад общению с тобой!",
                             "Как твой день проходит?"
                         ];
                         
                         const replyMessage = {
                             id: Date.now(),
-                            from: message.to,
+                            from: toUserId,
                             to: this.currentUser.id,
                             text: replies[Math.floor(Math.random() * replies.length)],
                             timestamp: new Date().toISOString(),
-                            read: false,
-                            device: { platform: "Cross-Device", userAgent: "FlashMessenger Cloud" }
+                            read: false
                         };
 
                         this.messages.push(replyMessage);
-                        this.saveToCloud();
+                        this.saveAll();
 
-                        // Обновляем UI если открыт этот чат
-                        if (this.currentChat && this.currentChat.id === message.to) {
+                        if (this.currentChat && this.currentChat.id === toUserId) {
                             addMessageToChat(replyMessage, false);
                         }
-                        
-                        showNotification(`Новое сообщение от ${partner.username}`);
                     }
-                }, 2000 + Math.random() * 3000);
-            }
+                }, 1000 + Math.random() * 2000);
 
-            // Создание демо-чатов
-            createDemoChats() {
-                if (this.messages.length === 0) {
-                    const demoMessages = [
-                        { from: 1, to: this.currentUser.id, text: "Привет! Рад тебя видеть в FlashMessenger! 🌟" },
-                        { from: this.currentUser.id, to: 1, text: "Привет! Классный мессенджер!" },
-                        { from: 1, to: this.currentUser.id, text: "Да, здесь можно общаться с любого устройства! 📱💻" },
-                        { from: 3, to: this.currentUser.id, text: "Добро пожаловать в наше сообщество! 👋" },
-                        { from: 5, to: this.currentUser.id, text: "Привет! Как тебе приложение?" }
-                    ];
-
-                    demoMessages.forEach((demo, index) => {
-                        const message = {
-                            id: Date.now() + index,
-                            from: demo.from,
-                            to: demo.to,
-                            text: demo.text,
-                            timestamp: new Date(Date.now() - 1000 * 60 * 60 * (index + 1)).toISOString(),
-                            read: true,
-                            device: { platform: "Demo", userAgent: "FlashMessenger Demo" }
-                        };
-                        this.messages.push(message);
-                    });
-
-                    this.saveToCloud();
-                }
+                return message;
             }
         }
 
         // ==================== UI MANAGEMENT ====================
-        const database = new CloudDatabase();
+        const messenger = new SimpleMessenger();
 
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(screen => {
@@ -1092,23 +1399,22 @@
         }
 
         function showAppTab(tabName) {
-            // Hide all tab contents
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
-            
-            // Show selected tab
-            document.getElementById(tabName + 'Tab').classList.add('active');
-            
-            // Update navigation
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
+            
+            document.getElementById(tabName + 'Tab').classList.add('active');
             event.target.classList.add('active');
 
-            // Load data for the tab
             if (tabName === 'chats') {
                 loadChats();
+            } else if (tabName === 'friends') {
+                updateFriendsLists();
+            } else if (tabName === 'discover') {
+                updateDiscoverList();
             }
         }
 
@@ -1126,8 +1432,7 @@
 
         function showNotification(message, type = 'success') {
             const notification = document.createElement('div');
-            notification.className = 'notification';
-            notification.style.background = type === 'error' ? 'var(--error)' : 'var(--success)';
+            notification.className = 'notification' + (type === 'error' ? ' error' : '');
             notification.textContent = message;
             document.body.appendChild(notification);
 
@@ -1153,9 +1458,9 @@
             }
 
             try {
-                const user = database.register(username, password);
+                const user = messenger.register(username, password);
                 showNotification('Аккаунт успешно создан!');
-                database.currentUser = user;
+                messenger.currentUser = user;
                 setTimeout(() => showMainApp(), 1000);
             } catch (error) {
                 showNotification(error.message, 'error');
@@ -1172,7 +1477,7 @@
             }
 
             try {
-                const user = database.login(username, password);
+                const user = messenger.login(username, password);
                 showNotification(`Добро пожаловать, ${user.username}!`);
                 setTimeout(() => showMainApp(), 1000);
             } catch (error) {
@@ -1182,45 +1487,41 @@
 
         function showMainApp() {
             showScreen('mainApp');
-            document.getElementById('userAvatar').textContent = database.currentUser.avatar;
-            document.getElementById('userName').textContent = database.currentUser.username;
-            
-            // Создаем демо-чаты для нового пользователя
-            database.createDemoChats();
+            document.getElementById('userAvatar').textContent = messenger.currentUser.avatar;
+            document.getElementById('userName').textContent = messenger.currentUser.username;
             loadChats();
+            updateFriendsLists();
+            updateDiscoverList();
         }
 
         function logout() {
-            if (database.currentUser) {
-                database.currentUser.online = false;
-                database.currentUser.lastSeen = new Date().toISOString();
-                database.saveToCloud();
+            if (messenger.currentUser) {
+                messenger.currentUser.online = false;
+                messenger.currentUser.lastSeen = new Date().toISOString();
+                messenger.saveAll();
             }
-            database.currentUser = null;
+            messenger.currentUser = null;
             showScreen('welcomeScreen');
             showNotification('Вы вышли из системы');
         }
 
         // ==================== CHAT MANAGEMENT ====================
         function loadChats() {
-            const chats = database.getChats();
-            const chatList = document.getElementById('chatList');
+            const chats = messenger.getChats();
+            const chatList = document.getElementById('chatsList');
 
             if (chats.length > 0) {
                 chatList.innerHTML = chats.map(chat => `
-                    <div class="chat-item" onclick="openChat(${chat.partner.id})">
-                        <div class="chat-avatar">
+                    <div class="friend-item" onclick="openChat(${chat.partner.id})">
+                        <div class="friend-avatar">
                             ${chat.partner.avatar}
                             <div class="status-indicator ${chat.partner.online ? 'status-online' : 'status-offline'}"></div>
                         </div>
-                        <div class="chat-info">
-                            <div class="chat-name">${chat.partner.username}</div>
-                            <div class="chat-last-message">${chat.lastMessage?.text || 'Нет сообщений'}</div>
+                        <div class="friend-info">
+                            <div class="friend-name">${chat.partner.username}</div>
+                            <div class="friend-status">${chat.lastMessage?.text || 'Нет сообщений'}</div>
                         </div>
-                        <div class="chat-meta">
-                            <div class="chat-time">${formatTime(chat.lastMessage?.timestamp)}</div>
-                            ${chat.unread > 0 ? `<div class="unread-badge">${chat.unread}</div>` : ''}
-                        </div>
+                        ${chat.unread > 0 ? `<div class="section-count">${chat.unread}</div>` : ''}
                     </div>
                 `).join('');
             } else {
@@ -1235,23 +1536,20 @@
         }
 
         function openChat(partnerId) {
-            const partner = database.users.find(u => u.id === partnerId);
-            database.currentChat = partner;
+            const partner = messenger.users.find(u => u.id === partnerId);
+            messenger.currentChat = partner;
 
-            // Show chat screen
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
             document.getElementById('chatScreen').classList.add('active');
 
-            // Update chat header
             document.getElementById('currentChatAvatar').textContent = partner.avatar;
             document.getElementById('currentChatAvatar').querySelector('.status-indicator').className = 
                 `status-indicator ${partner.online ? 'status-online' : 'status-offline'}`;
             document.getElementById('currentChatName').textContent = partner.username;
             document.getElementById('currentChatStatus').textContent = partner.online ? 'В сети' : 'Не в сети';
 
-            // Enable message input
             document.getElementById('messageInput').disabled = false;
             document.getElementById('messageInput').placeholder = `Сообщение для ${partner.username}...`;
             document.getElementById('sendButton').disabled = false;
@@ -1260,14 +1558,14 @@
         }
 
         function loadChatHistory() {
-            const messages = database.getMessageHistory(database.currentChat.id);
+            const messages = messenger.getMessageHistory(messenger.currentChat.id);
             const chatMessages = document.getElementById('chatMessages');
 
             if (messages.length > 0) {
                 chatMessages.innerHTML = messages.map(msg => `
-                    <div class="message ${msg.from === database.currentUser.id ? 'sent' : 'received'}">
+                    <div class="message ${msg.from === messenger.currentUser.id ? 'sent' : 'received'}">
                         ${msg.text}
-                        <div class="message-time">${formatTime(msg.timestamp)} • ${getDeviceIcon(msg.device)}</div>
+                        <div class="message-time">${formatTime(msg.timestamp)}</div>
                     </div>
                 `).join('');
             } else {
@@ -1275,7 +1573,7 @@
                     <div class="empty-state">
                         <i class="fas fa-comments"></i>
                         <h3>Начните общение</h3>
-                        <p>Отправьте первое сообщение ${database.currentChat.username}</p>
+                        <p>Отправьте первое сообщение ${messenger.currentChat.username}</p>
                     </div>
                 `;
             }
@@ -1287,9 +1585,9 @@
             const input = document.getElementById('messageInput');
             const text = input.value.trim();
 
-            if (!text || !database.currentChat) return;
+            if (!text || !messenger.currentChat) return;
 
-            const message = database.sendMessage(database.currentChat.id, text);
+            const message = messenger.sendMessage(messenger.currentChat.id, text);
             addMessageToChat(message, true);
             input.value = '';
         }
@@ -1297,7 +1595,6 @@
         function addMessageToChat(message, isSent) {
             const chatMessages = document.getElementById('chatMessages');
             
-            // Remove empty state if present
             if (chatMessages.querySelector('.empty-state')) {
                 chatMessages.innerHTML = '';
             }
@@ -1306,11 +1603,224 @@
             messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
             messageDiv.innerHTML = `
                 ${message.text}
-                <div class="message-time">${formatTime(message.timestamp)} • ${getDeviceIcon(message.device)}</div>
+                <div class="message-time">${formatTime(message.timestamp)}</div>
             `;
             
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // ==================== FRIENDS SYSTEM ====================
+        function updateFriendsLists() {
+            const requests = messenger.getFriendRequests();
+            const onlineFriends = messenger.getOnlineFriends();
+            const allFriends = messenger.getFriends();
+
+            document.getElementById('requestsCount').textContent = requests.length;
+            document.getElementById('onlineCount').textContent = onlineFriends.length;
+            document.getElementById('allFriendsCount').textContent = allFriends.length;
+
+            // Заявки
+            const requestsList = document.getElementById('friendRequestsList');
+            if (requests.length > 0) {
+                requestsList.innerHTML = requests.map(user => `
+                    <div class="request-item">
+                        <div class="friend-avatar">
+                            ${user.avatar}
+                            <div class="status-indicator ${user.online ? 'status-online' : 'status-offline'}"></div>
+                        </div>
+                        <div class="friend-info">
+                            <div class="friend-name">${user.username}</div>
+                            <div class="friend-status">Хочет добавить вас в друзья</div>
+                        </div>
+                        <div class="request-actions">
+                            <button class="friend-action-btn accept-btn" onclick="acceptRequest(${user.id})">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="friend-action-btn decline-btn" onclick="declineRequest(${user.id})">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                requestsList.innerHTML = '<div class="empty-state"><i class="fas fa-user-clock"></i><div>Нет новых заявок</div></div>';
+            }
+
+            // Друзья онлайн
+            const onlineList = document.getElementById('onlineFriendsList');
+            if (onlineFriends.length > 0) {
+                onlineList.innerHTML = onlineFriends.map(user => `
+                    <div class="friend-item" onclick="openChat(${user.id})">
+                        <div class="friend-avatar">
+                            ${user.avatar}
+                            <div class="status-indicator status-online"></div>
+                        </div>
+                        <div class="friend-info">
+                            <div class="friend-name">${user.username}</div>
+                            <div class="friend-status">В сети</div>
+                        </div>
+                        <div class="friend-actions">
+                            <button class="friend-action-btn" onclick="openChat(${user.id})">
+                                <i class="fas fa-comment"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                onlineList.innerHTML = '<div class="empty-state"><i class="fas fa-user"></i><div>Нет друзей онлайн</div></div>';
+            }
+
+            // Все друзья
+            const allList = document.getElementById('allFriendsList');
+            if (allFriends.length > 0) {
+                allList.innerHTML = allFriends.map(user => `
+                    <div class="friend-item" onclick="openChat(${user.id})">
+                        <div class="friend-avatar">
+                            ${user.avatar}
+                            <div class="status-indicator ${user.online ? 'status-online' : 'status-offline'}"></div>
+                        </div>
+                        <div class="friend-info">
+                            <div class="friend-name">${user.username}</div>
+                            <div class="friend-status">${user.online ? 'В сети' : 'Не в сети'}</div>
+                        </div>
+                        <div class="friend-actions">
+                            <button class="friend-action-btn" onclick="openChat(${user.id})">
+                                <i class="fas fa-comment"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                allList.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><div>Пока нет друзей</div></div>';
+            }
+
+            // Бейдж
+            const badge = document.getElementById('friendsBadge');
+            if (requests.length > 0) {
+                badge.textContent = requests.length;
+                badge.style.display = 'block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function updateDiscoverList() {
+            const users = messenger.getDiscoverUsers();
+            const discoverList = document.getElementById('discoverUsersList');
+
+            if (users.length > 0) {
+                discoverList.innerHTML = users.map(user => `
+                    <div class="user-item">
+                        <div class="friend-avatar">
+                            ${user.avatar}
+                            <div class="status-indicator ${user.online ? 'status-online' : 'status-offline'}"></div>
+                        </div>
+                        <div class="friend-info">
+                            <div class="friend-name">${user.username}</div>
+                            <div class="friend-status">${user.online ? 'В сети' : 'Не в сети'}</div>
+                        </div>
+                        <button class="add-friend-btn" onclick="addFriend(${user.id})">
+                            <i class="fas fa-user-plus"></i> Добавить
+                        </button>
+                    </div>
+                `).join('');
+            } else {
+                discoverList.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><div>Новых пользователей нет</div></div>';
+            }
+        }
+
+        function addFriend(userId) {
+            messenger.sendFriendRequest(userId);
+            showNotification('Заявка отправлена!');
+            updateDiscoverList();
+        }
+
+        function acceptRequest(userId) {
+            messenger.acceptFriendRequest(userId);
+            showNotification('Заявка принята!');
+            updateFriendsLists();
+            updateDiscoverList();
+        }
+
+        function declineRequest(userId) {
+            messenger.declineFriendRequest(userId);
+            showNotification('Заявка отклонена');
+            updateFriendsLists();
+        }
+
+        // ==================== SEARCH ====================
+        function searchChats(query) {
+            const chats = messenger.getChats();
+            const filtered = chats.filter(chat => 
+                chat.partner.username.toLowerCase().includes(query.toLowerCase())
+            );
+            displayFilteredChats(filtered, query);
+        }
+
+        function searchFriends(query) {
+            const friends = messenger.getFriends();
+            const online = messenger.getOnlineFriends();
+            const requests = messenger.getFriendRequests();
+            
+            const filteredFriends = friends.filter(f => f.username.toLowerCase().includes(query.toLowerCase()));
+            const filteredOnline = online.filter(f => f.username.toLowerCase().includes(query.toLowerCase()));
+            const filteredRequests = requests.filter(f => f.username.toLowerCase().includes(query.toLowerCase()));
+            
+            displayFilteredFriends(filteredRequests, filteredOnline, filteredFriends, query);
+        }
+
+        function searchDiscover(query) {
+            const users = messenger.getDiscoverUsers();
+            const filtered = users.filter(u => u.username.toLowerCase().includes(query.toLowerCase()));
+            displayFilteredDiscover(filtered, query);
+        }
+
+        function displayFilteredChats(chats, query) {
+            const chatList = document.getElementById('chatsList');
+            if (chats.length > 0 || !query) {
+                loadChats();
+            } else {
+                chatList.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><div>Чаты не найдены</div></div>';
+            }
+        }
+
+        function displayFilteredFriends(requests, online, all, query) {
+            if (!query) {
+                updateFriendsLists();
+                return;
+            }
+
+            // Simplified display for search results
+            const friendsList = document.getElementById('friendsTab');
+            friendsList.innerHTML = `
+                <div class="friends-section">
+                    <div class="section-title">Результаты поиска</div>
+                    <div class="friends-list">
+                        ${[...requests, ...online, ...all].map(user => `
+                            <div class="friend-item" onclick="openChat(${user.id})">
+                                <div class="friend-avatar">
+                                    ${user.avatar}
+                                    <div class="status-indicator ${user.online ? 'status-online' : 'status-offline'}"></div>
+                                </div>
+                                <div class="friend-info">
+                                    <div class="friend-name">${user.username}</div>
+                                    <div class="friend-status">${user.online ? 'В сети' : 'Не в сети'}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayFilteredDiscover(users, query) {
+            const discoverList = document.getElementById('discoverUsersList');
+            if (users.length > 0 || !query) {
+                updateDiscoverList();
+            } else {
+                discoverList.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><div>Пользователи не найдены</div></div>';
+            }
         }
 
         // ==================== UTILITIES ====================
@@ -1330,18 +1840,6 @@
             }
         }
 
-        function getDeviceIcon(device) {
-            if (!device) return '📱';
-            if (device.platform?.includes('Win')) return '💻';
-            if (device.platform?.includes('Mac')) return '💻';
-            if (device.platform?.includes('Linux')) return '💻';
-            if (device.userAgent?.includes('Mobile')) return '📱';
-            if (device.platform === 'Cross-Device') return '☁️';
-            if (device.platform === 'Demo') return '🌟';
-            return '📱';
-        }
-
-        // ==================== INITIALIZATION ====================
         function createParticles() {
             const container = document.getElementById('particles');
             for (let i = 0; i < 15; i++) {
@@ -1357,20 +1855,11 @@
             }
         }
 
-        // Auto-login for demo
-        function autoLogin() {
-            try {
-                const user = database.login('Анна', '1234');
-                showMainApp();
-            } catch (e) {
-                // Stay on welcome screen
-            }
-        }
-
+        // ==================== INITIALIZATION ====================
         document.addEventListener('DOMContentLoaded', function() {
             createParticles();
             
-            // Enter key support
+            // Поддержка Enter
             document.getElementById('regPassword').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') register();
             });
@@ -1380,16 +1869,7 @@
             document.getElementById('messageInput').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') sendMessage();
             });
-
-            // Try auto-login for demo
-            autoLogin();
         });
     </script>
-
-    <!-- Security Meta Tags -->
-    <meta name="description" content="FlashMessenger - безопасный мессенджер для общения на любых устройствах">
-    <meta name="keywords" content="мессенджер, чат, общение, безопасность, кросс-платформенный">
-    <meta name="author" content="FlashMessenger Team">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com;">
 </body>
 </html>
